@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CA6F57F81994137200FF7783"
-               BuildableName = "Twicture.app"
-               BlueprintName = "Twicture"
-               ReferencedContainer = "container:Twicture.xcodeproj">
+               BuildableName = "Twic.app"
+               BlueprintName = "Twic"
+               ReferencedContainer = "container:Twic.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CA6F58191994137200FF7783"
-               BuildableName = "TwictureTests.xctest"
-               BlueprintName = "TwictureTests"
-               ReferencedContainer = "container:Twicture.xcodeproj">
+               BuildableName = "TwicTests.xctest"
+               BlueprintName = "TwicTests"
+               ReferencedContainer = "container:Twic.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -43,9 +43,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CA6F57F81994137200FF7783"
-            BuildableName = "Twicture.app"
-            BlueprintName = "Twicture"
-            ReferencedContainer = "container:Twicture.xcodeproj">
+            BuildableName = "Twic.app"
+            BlueprintName = "Twic"
+            ReferencedContainer = "container:Twic.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CA6F57F81994137200FF7783"
-            BuildableName = "Twicture.app"
-            BlueprintName = "Twicture"
-            ReferencedContainer = "container:Twicture.xcodeproj">
+            BuildableName = "Twic.app"
+            BlueprintName = "Twic"
+            ReferencedContainer = "container:Twic.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -80,9 +80,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CA6F57F81994137200FF7783"
-            BuildableName = "Twicture.app"
-            BlueprintName = "Twicture"
-            ReferencedContainer = "container:Twicture.xcodeproj">
+            BuildableName = "Twic.app"
+            BlueprintName = "Twic"
+            ReferencedContainer = "container:Twic.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
