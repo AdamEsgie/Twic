@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@class TopBarView, BottomBarView;
+@class TopBarView, BottomBarView, ActionButton;
 
 @protocol PhotoButtonDelegate <NSObject>
 
 -(void)shouldStartSendingTwic;
--(void)shouldCancelTwic;
+-(void)shouldResetController;
 
 @end
 
@@ -23,8 +23,10 @@
 @property (nonatomic, strong) UIImageView *photoView;
 @property (nonatomic, strong) BottomBarView *bottomBar;
 @property (nonatomic, strong) TopBarView *topBar;
+@property (nonatomic, strong) UITextField *textField;
+@property (nonatomic, strong) ActionButton *actionButton;
 
 -(void)animateCommentButton;
 -(void)centerCommentButtonAnimated:(BOOL)animated;
-
+-(void)cleanupTextViewAndDismissKeyboard;
 @end

@@ -11,6 +11,7 @@
 @protocol ActionButtonDelegate <NSObject>
 
 -(void)twicTaken;
+-(void)sendTwic;
 
 @end
 
@@ -22,7 +23,7 @@
 
 -(IBAction)takePhotoTapped:(id)sender;
 -(IBAction)commentTapped:(id)sender;
--(IBAction)sendTapped:(id)sender;
+
 -(IBAction)cancelTapped:(id)sender;
 -(void)clearTargetsAndActions;
 -(void)addTargetAtIndex:(NSInteger)index;

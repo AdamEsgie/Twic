@@ -21,7 +21,7 @@ typedef NS_ENUM(NSInteger, ActionButtonState)
 #define GreenButtonColor [UIColor colorWithRed:0/255.0f green:206/255.0f blue:15/255.0f alpha:1.00]
 
 #define DefaultTitleFont [UIFont fontWithName:@"AvenirNextCondensed-Bold" size:20.0f]
-#define DefaultTextFieldFont [UIFont fontWithName:@"AvenirNextCondensed-Medium" size:18.0f]
+#define DefaultTextFieldFont [UIFont fontWithName:@"AvenirNextCondensed-Medium" size:20.0f]
 
 static const CGFloat buttonSize = 64;
 

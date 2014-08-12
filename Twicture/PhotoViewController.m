@@ -16,12 +16,10 @@
 #import "InvisibleDragMagicButton.h"
 #import "AnimationHelper.h"
 
-@interface PhotoViewController () <InvisibleButtonDelegate>
+@interface PhotoViewController () <InvisibleButtonDelegate, ActionButtonDelegate>
 
-@property (nonatomic, strong) ActionButton *actionButton;
 @property (nonatomic, strong) InvisibleDragMagicButton *invisibleDragMagicButton;
 @property (nonatomic, strong) UIImage *photoTakenImage;
-@property (nonatomic, strong) UITextField *textField;
 @property BOOL animatingDrag;
 @property BOOL dragging;
 @end
@@ -47,7 +45,7 @@
 {
   [super viewWillAppear:animated];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -96,8 +94,7 @@
     [UIView animateWithDuration:0.2 delay:0.2 usingSpringWithDamping:0.2 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseInOut animations:^{
       self.actionButton.actionView.transform = [AnimationHelper scaleExpandView:self.actionButton.actionView];
     } completion:^(BOOL finished) {
-      [self.actionButton clearTargetsAndActions];
-      [self.actionButton addTargetAtIndex:commentState];
+      
     }];
   }];
 }
@@ -153,7 +150,7 @@
             self.actionButton.actionView.transform = [AnimationHelper scaleExpandView:self.actionButton.actionView];
           } completion:^(BOOL finished) {
             
-            [self.delegate shouldCancelTwic];
+            [self.delegate shouldResetController];
             self.animatingDrag = NO;
           }];
         }];
@@ -215,19 +212,66 @@
   NSTimeInterval duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
   UIViewAnimationCurve curve = [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue];
   
+  
+  [self.actionButton clearTargetsAndActions];
+  [self.actionButton addTargetAtIndex:sendState];
+  
   [UIView animateWithDuration:duration animations:^{
+    
     [UIView setAnimationCurve:curve];
+    self.actionButton.actionView.transform = [AnimationHelper scaleShrinkView:self.actionButton.actionView];
     self.textField.frame = CGRectMake(self.textField.origin.x, self.view.height - keyboardRect.size.height - self.textField.height, self.textField.width, self.textField.height);
     self.bottomBar.frame = CGRectMake(self.bottomBar.origin.x, self.view.height - keyboardRect.size.height - self.bottomBar.height, self.bottomBar.width, self.bottomBar.height);
+    self.actionButton.frame = CGRectMake(self.actionButton.origin.x, self.view.height - keyboardRect.size.height - self.actionButton.height, self.actionButton.width, self.actionButton.height);
   } completion:^(BOOL finished) {
     
+    [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:sendState][@"image"]];
+    
+    [UIView animateWithDuration:duration animations:^{
+      self.actionButton.actionView.transform = [AnimationHelper scaleExpandView:self.actionButton.actionView];
+      self.actionButton.center = CGPointMake(self.view.width-self.actionButton.width/2, self.actionButton.center.y);
+    } completion:^(BOOL finished) {}];
   }];
 
 }
 
--(void)keyboardDidHide:(NSNotification *)notification
+-(void)keyboardWillHide:(NSNotification *)notification
 {
-  self.textField.frame = CGRectMake(self.textField.origin.x, self.view.height - self.textField.height, self.textField.width, self.textField.height);
-  self.bottomBar.frame = CGRectMake(self.bottomBar.origin.x, self.view.height - self.bottomBar.height, self.bottomBar.width, self.bottomBar.height);
+  NSTimeInterval duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+  UIViewAnimationCurve curve = [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue];
+  
+  [self.actionButton clearTargetsAndActions];
+  [self.actionButton addTargetAtIndex:photoState];
+  
+  [UIView animateWithDuration:duration animations:^{
+    
+    [UIView setAnimationCurve:curve];
+    self.actionButton.actionView.transform = [AnimationHelper scaleShrinkView:self.actionButton.actionView];
+    self.textField.frame = CGRectMake(self.textField.origin.x, self.view.height - self.textField.height, self.textField.width, self.textField.height);
+    self.bottomBar.frame = CGRectMake(self.bottomBar.origin.x, self.view.height - self.bottomBar.height, self.bottomBar.width, self.bottomBar.height);
+    self.actionButton.frame = CGRectMake(self.actionButton.origin.x, self.view.height - self.actionButton.height, self.actionButton.width, self.actionButton.height);
+  } completion:^(BOOL finished) {
+    
+    [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:photoState][@"image"]];
+    self.topBar.backgroundColor = YellowButtonColor;
+    self.bottomBar.backgroundColor = YellowButtonColor;
+    
+    [UIView animateWithDuration:duration animations:^{
+      self.actionButton.actionView.transform = [AnimationHelper scaleExpandView:self.actionButton.actionView];
+      self.actionButton.center = CGPointMake(self.view.width/2, self.actionButton.center.y);
+    } completion:^(BOOL finished) {
+      [self.delegate shouldResetController];
+    }];
+  }];
+}
+
+-(void)cleanupTextViewAndDismissKeyboard
+{
+  [self.textField resignFirstResponder];
+  [self.textField removeFromSuperview];
+  self.textField = nil;
+  
+  self.topBar.backgroundColor = GreenButtonColor;
+  self.bottomBar.backgroundColor = GreenButtonColor;
 }
 @end

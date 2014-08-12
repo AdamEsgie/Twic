@@ -49,7 +49,7 @@
 
 -(IBAction)sendTapped:(id)sender
 {
-  
+  [self.delegate sendTwic];
 }
 
 -(IBAction)cancelTapped:(id)sender

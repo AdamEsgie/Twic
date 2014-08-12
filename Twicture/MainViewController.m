@@ -64,6 +64,7 @@
     self.photoViewController.delegate = self;
     self.photoViewController.view.frame = self.view.bounds;
     self.photoViewController.topBar.delegate = self;
+    self.photoViewController.actionButton.delegate = self;
     [self pushViewController:self.photoViewController animated:NO];
   }
   
@@ -151,6 +152,14 @@
   [self.cameraController takePicture];
 }
 
+-(void)sendTwic
+{
+  TwitterRequest *twitterRequest = [[TwitterRequest alloc] init];
+  twitterRequest.delegate = self;
+  [twitterRequest postImage:self.capturedImage withStatus:self.photoViewController.textField.text ?: @""];
+  [self.photoViewController cleanupTextViewAndDismissKeyboard];
+}
+
 #pragma mark - UIImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
@@ -169,10 +178,10 @@
 {
   TwitterRequest *twitterRequest = [[TwitterRequest alloc] init];
   twitterRequest.delegate = self;
-  [twitterRequest postImage:self.capturedImage withStatus:@"test"];
+  [twitterRequest postImage:self.capturedImage withStatus:self.photoViewController.textField.text ?: @""];
   [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:YES];
 }
--(void)shouldCancelTwic
+-(void)shouldResetController
 {
   [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:YES];
 }
