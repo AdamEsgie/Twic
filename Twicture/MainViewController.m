@@ -68,43 +68,52 @@
     [self pushViewController:self.photoViewController animated:NO];
   }
   
-  self.photoViewController.topBar.accountLabel.text = [self currentAccountName];
-  [self.photoViewController.photoView setImage:self.capturedImage];
+  if ([self hasAccounts]) {
+    self.photoViewController.topBar.accountLabel.text = [self currentAccountName];
+    [self.photoViewController.photoView setImage:self.capturedImage];
+  } else {
+    self.photoViewController.topBar.accountLabel.text = @"No Accounts";
+  }
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
   
-  if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera] && !self.capturedImage) {
-    
-    [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
-    
-  } else if (self.capturedImage) {
-    [self.photoViewController animateCommentButton];
+  if (self.accounts.count > 0) {
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera] && !self.capturedImage) {
+      
+      [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
+      
+    } else if (self.capturedImage) {
+      [self.photoViewController animateCommentButton];
+    }
   }
 }
 
 - (void)showCameraForSource:(UIImagePickerControllerSourceType)sourceType animated:(BOOL)animated
 {
-  self.cameraController = nil;
-  [self.overlayView removeFromSuperview];
-  self.overlayView = nil;
+//  self.cameraController = nil;
+//  [self.overlayView removeFromSuperview];
+//  self.overlayView = nil;
   
-  self.cameraController = [[UIImagePickerController alloc] init];
-  self.cameraController.sourceType = sourceType;
-  self.cameraController.delegate = self;
-  
+  if (!self.cameraController) {
+    self.cameraController = [[UIImagePickerController alloc] init];
+    self.cameraController.sourceType = sourceType;
+    self.cameraController.delegate = self;
+  }
   if (sourceType == UIImagePickerControllerSourceTypeCamera)
   {
+    if (!self.overlayView) {
+      self.overlayView = [[OverlayView alloc] initWithFrame:self.view.bounds];
+      self.overlayView.topBar.accountLabel.text = [self currentAccountName];
+      self.overlayView.topBar.delegate = self;
+      self.overlayView.actionButton.delegate = self;
+    }
+    
     self.cameraController.showsCameraControls = NO;
     self.cameraController.cameraViewTransform = [CameraScaleHelper scaleForFullScreen];
-    
-    self.overlayView = [[OverlayView alloc] initWithFrame:self.view.bounds];
-    self.overlayView.topBar.accountLabel.text = [self currentAccountName];
-    self.overlayView.topBar.delegate = self;
-    self.cameraController.cameraOverlayView = self.overlayView;
-    self.overlayView.actionButton.delegate = self;
+     self.cameraController.cameraOverlayView = self.overlayView;
   
   }
   
@@ -135,6 +144,11 @@
     self.indexOfSelectedAccount = self.indexOfSelectedAccount + 1;
   }
   return [self currentAccountName];
+}
+
+- (BOOL)hasAccounts
+{
+  return self.accounts.count > 0;
 }
 
 #pragma mark - Top Bar Delegate

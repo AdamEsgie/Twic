@@ -24,7 +24,6 @@
 
 - (void)addButtons
 {
- 
   self.frontCameraButton = [[UIButton alloc] initWithFrame:CGRectMake(self.width - self.height, 0, buttonSize, buttonSize)];
   [self.frontCameraButton addTarget:self action:@selector(frontCameraButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
   [self.frontCameraButton setImage:[UIImage imageNamed:@"frontCameraIcon"] forState:UIControlStateNormal];
@@ -60,4 +59,5 @@
   NSString *nextAccountName = [self.delegate nextAccountName];
   self.accountLabel.text = nextAccountName;
 }
+
 @end

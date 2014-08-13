@@ -23,4 +23,6 @@
 @property (nonatomic, strong) UIButton *infoButton;
 @property (nonatomic, strong) UIButton *accountButton;
 @property (nonatomic, strong) UILabel *accountLabel;
+
+- (id)initWithFrame:(CGRect)frame andDelegate:(id<TopBarDelegate>)delegate;
 @end

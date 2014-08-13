@@ -14,6 +14,7 @@
 
 -(void)shouldStartSendingTwic;
 -(void)shouldResetController;
+- (BOOL)hasAccounts;
 
 @end
 

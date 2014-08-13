@@ -42,17 +42,17 @@
   [self.delegate twicTaken];
 }
 
--(IBAction)commentTapped:(id)sender
-{
-  
-}
-
 -(IBAction)sendTapped:(id)sender
 {
   [self.delegate sendTwic];
 }
 
 -(IBAction)cancelTapped:(id)sender
+{
+  
+}
+
+-(IBAction)commentTapped:(id)sender
 {
   
 }

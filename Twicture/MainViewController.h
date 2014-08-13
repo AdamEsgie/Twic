@@ -12,6 +12,8 @@
 
 @interface MainViewController : UINavigationController
 
+@property (nonatomic, strong, readonly) NSArray *accounts;
+
 - (instancetype)initWithFrame:(CGRect)frame andAccounts:(NSArray*)accounts;
 
 @end

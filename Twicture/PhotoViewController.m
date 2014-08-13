@@ -20,6 +20,8 @@
 
 @property (nonatomic, strong) InvisibleDragMagicButton *invisibleDragMagicButton;
 @property (nonatomic, strong) UIImage *photoTakenImage;
+@property (nonatomic, strong) UIView *tapView;
+@property BOOL canceledTextField;
 @property BOOL animatingDrag;
 @property BOOL dragging;
 @end
@@ -81,6 +83,10 @@
   [self.invisibleDragMagicButton addTarget:self action:@selector(commentInitiated:) forControlEvents:UIControlEventTouchUpInside];
   self.invisibleDragMagicButton.frame = CGRectMake(self.view.width/2-buttonSize/2, self.view.height-buttonSize, buttonSize, buttonSize);
   [self.view addSubview:self.invisibleDragMagicButton];
+  
+  if (![self.delegate hasAccounts]) {
+    [self disableButtonsIfNoAccounts];
+  }
 }
 
 -(void)animateCommentButton
@@ -122,8 +128,10 @@
   
   CGPoint dragPoint = [[[event allTouches] anyObject] locationInView:self.view];
   
-  self.topBar.backgroundColor = [ColorHelper colorForOffset:dragPoint.x];
-  self.bottomBar.backgroundColor = [ColorHelper colorForOffset:dragPoint.x];
+  if (!self.animatingDrag) {
+    self.topBar.backgroundColor = [ColorHelper colorForOffset:dragPoint.x];
+    self.bottomBar.backgroundColor = [ColorHelper colorForOffset:dragPoint.x];
+  }
   
   
   if (!self.animatingDrag) {
@@ -227,12 +235,13 @@
     
     [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:sendState][@"image"]];
     
-    [UIView animateWithDuration:duration animations:^{
+    [UIView animateWithDuration:0.10 animations:^{
       self.actionButton.actionView.transform = [AnimationHelper scaleExpandView:self.actionButton.actionView];
       self.actionButton.center = CGPointMake(self.view.width-self.actionButton.width/2, self.actionButton.center.y);
     } completion:^(BOOL finished) {}];
   }];
 
+  [self addTapRecognizerToDismiss];
 }
 
 -(void)keyboardWillHide:(NSNotification *)notification
@@ -252,26 +261,67 @@
     self.actionButton.frame = CGRectMake(self.actionButton.origin.x, self.view.height - self.actionButton.height, self.actionButton.width, self.actionButton.height);
   } completion:^(BOOL finished) {
     
-    [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:photoState][@"image"]];
+    if (self.canceledTextField) {
+      [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:commentState][@"image"]];
+    } else {
+      [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:photoState][@"image"]];
+    }
     self.topBar.backgroundColor = YellowButtonColor;
     self.bottomBar.backgroundColor = YellowButtonColor;
     
-    [UIView animateWithDuration:duration animations:^{
+    [UIView animateWithDuration:0.10 animations:^{
       self.actionButton.actionView.transform = [AnimationHelper scaleExpandView:self.actionButton.actionView];
       self.actionButton.center = CGPointMake(self.view.width/2, self.actionButton.center.y);
     } completion:^(BOOL finished) {
-      [self.delegate shouldResetController];
+      
+      if (!self.canceledTextField) {
+        [self.delegate shouldResetController];
+      }
+      self.canceledTextField = NO;
     }];
   }];
 }
 
 -(void)cleanupTextViewAndDismissKeyboard
 {
+  [self cleanupTextView];
+  
+  self.topBar.backgroundColor = GreenButtonColor;
+  self.bottomBar.backgroundColor = GreenButtonColor;
+}
+
+-(void)cleanupTextView
+{
   [self.textField resignFirstResponder];
   [self.textField removeFromSuperview];
   self.textField = nil;
   
-  self.topBar.backgroundColor = GreenButtonColor;
-  self.bottomBar.backgroundColor = GreenButtonColor;
+  [self.tapView removeFromSuperview];
+  self.tapView = NO;
+}
+
+-(void)cleanupOnTextViewCancel
+{
+  self.canceledTextField = YES;
+  [self cleanupTextView];
+}
+
+-(void)disableButtonsIfNoAccounts
+{
+  self.topBar.userInteractionEnabled = NO;
+  self.actionButton.userInteractionEnabled = NO;
+  self.invisibleDragMagicButton.userInteractionEnabled = NO;
+  self.bottomBar.userInteractionEnabled = NO;
+}
+
+-(void)addTapRecognizerToDismiss
+{
+  self.tapView = [[UIView alloc] init];
+  self.tapView.frame = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.view.bounds), self.view.height - self.textField.top);
+  [self.view addSubview:self.tapView];
+  
+  UIGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cleanupOnTextViewCancel)];
+  [self.tapView setGestureRecognizers:[NSArray arrayWithObject:tap]];
+  
 }
 @end
