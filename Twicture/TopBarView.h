@@ -12,6 +12,7 @@
 
 - (NSString*)nextAccountName;
 - (void)changeCamera;
+- (void)showPhotoLibrary;
 
 @end
 
@@ -20,7 +21,7 @@
 @property (nonatomic, weak) id <TopBarDelegate> delegate;
 
 @property (nonatomic, strong) UIButton *frontCameraButton;
-@property (nonatomic, strong) UIButton *infoButton;
+@property (nonatomic, strong) UIButton *leftButton;
 @property (nonatomic, strong) UIButton *accountButton;
 @property (nonatomic, strong) UILabel *accountLabel;
 

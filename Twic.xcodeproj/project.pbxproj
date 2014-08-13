@@ -83,6 +83,14 @@
 		CABFF4F1199A79CB00DC7C4C /* infoIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CABFF4EA199A79CB00DC7C4C /* infoIcon.png */; };
 		CABFF4F2199A79CB00DC7C4C /* infoIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CABFF4EB199A79CB00DC7C4C /* infoIcon@2x.png */; };
 		CABFF4F3199A79CB00DC7C4C /* infoIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CABFF4EB199A79CB00DC7C4C /* infoIcon@2x.png */; };
+		CAFDD31D199BEBA600BC0DFE /* rollIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CAFDD31B199BEBA600BC0DFE /* rollIcon.png */; };
+		CAFDD31E199BEBA600BC0DFE /* rollIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CAFDD31C199BEBA600BC0DFE /* rollIcon@2x.png */; };
+		CAFDD321199BF68C00BC0DFE /* CameraRollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFDD320199BF68C00BC0DFE /* CameraRollViewController.m */; };
+		CAFDD322199BF68C00BC0DFE /* CameraRollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFDD320199BF68C00BC0DFE /* CameraRollViewController.m */; };
+		CAFDD32B199BFA4B00BC0DFE /* noAccountsImage.png in Resources */ = {isa = PBXBuildFile; fileRef = CAFDD329199BFA4B00BC0DFE /* noAccountsImage.png */; };
+		CAFDD32C199BFA4B00BC0DFE /* noAccountsImage.png in Resources */ = {isa = PBXBuildFile; fileRef = CAFDD329199BFA4B00BC0DFE /* noAccountsImage.png */; };
+		CAFDD32D199BFA4B00BC0DFE /* noAccountsImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CAFDD32A199BFA4B00BC0DFE /* noAccountsImage@2x.png */; };
+		CAFDD32E199BFA4B00BC0DFE /* noAccountsImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CAFDD32A199BFA4B00BC0DFE /* noAccountsImage@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -160,6 +168,12 @@
 		CABFF4E9199A79CB00DC7C4C /* frontCameraIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "frontCameraIcon@2x.png"; sourceTree = "<group>"; };
 		CABFF4EA199A79CB00DC7C4C /* infoIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = infoIcon.png; sourceTree = "<group>"; };
 		CABFF4EB199A79CB00DC7C4C /* infoIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "infoIcon@2x.png"; sourceTree = "<group>"; };
+		CAFDD31B199BEBA600BC0DFE /* rollIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rollIcon.png; sourceTree = "<group>"; };
+		CAFDD31C199BEBA600BC0DFE /* rollIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rollIcon@2x.png"; sourceTree = "<group>"; };
+		CAFDD31F199BF68C00BC0DFE /* CameraRollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraRollViewController.h; sourceTree = "<group>"; };
+		CAFDD320199BF68C00BC0DFE /* CameraRollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraRollViewController.m; sourceTree = "<group>"; };
+		CAFDD329199BFA4B00BC0DFE /* noAccountsImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = noAccountsImage.png; sourceTree = "<group>"; };
+		CAFDD32A199BFA4B00BC0DFE /* noAccountsImage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "noAccountsImage@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -271,6 +285,8 @@
 				CA6F58371994176600FF7783 /* MainViewController.m */,
 				CABFF4D819996E2000DC7C4C /* PhotoViewController.h */,
 				CABFF4D919996E2000DC7C4C /* PhotoViewController.m */,
+				CAFDD31F199BF68C00BC0DFE /* CameraRollViewController.h */,
+				CAFDD320199BF68C00BC0DFE /* CameraRollViewController.m */,
 				CABFF4DC1999795F00DC7C4C /* SupplementalViews */,
 				CA6F584519951B5200FF7783 /* Helpers */,
 			);
@@ -297,6 +313,10 @@
 		CABFF3C119956D0800DC7C4C /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				CAFDD329199BFA4B00BC0DFE /* noAccountsImage.png */,
+				CAFDD32A199BFA4B00BC0DFE /* noAccountsImage@2x.png */,
+				CAFDD31B199BEBA600BC0DFE /* rollIcon.png */,
+				CAFDD31C199BEBA600BC0DFE /* rollIcon@2x.png */,
 				CABFF4E8199A79CB00DC7C4C /* frontCameraIcon.png */,
 				CABFF4E9199A79CB00DC7C4C /* frontCameraIcon@2x.png */,
 				CABFF4EA199A79CB00DC7C4C /* infoIcon.png */,
@@ -426,6 +446,7 @@
 				CABFF4EC199A79CB00DC7C4C /* frontCameraIcon.png in Resources */,
 				CABFF4311998478900DC7C4C /* defaultOval@2x.png in Resources */,
 				CABFF4F2199A79CB00DC7C4C /* infoIcon@2x.png in Resources */,
+				CAFDD32B199BFA4B00BC0DFE /* noAccountsImage.png in Resources */,
 				CABFF4D219996C4600DC7C4C /* cancelIcon@2x.png in Resources */,
 				CA6F58151994137200FF7783 /* Images.xcassets in Resources */,
 				CABFF42F1998478900DC7C4C /* defaultOval.png in Resources */,
@@ -435,6 +456,9 @@
 				CABFF4C619995A7F00DC7C4C /* commentIcon@2x.png in Resources */,
 				CABFF4D419996C4600DC7C4C /* checkIcon.png in Resources */,
 				CABFF4D019996C4600DC7C4C /* cancelIcon.png in Resources */,
+				CAFDD31E199BEBA600BC0DFE /* rollIcon@2x.png in Resources */,
+				CAFDD31D199BEBA600BC0DFE /* rollIcon.png in Resources */,
+				CAFDD32D199BFA4B00BC0DFE /* noAccountsImage@2x.png in Resources */,
 				CABFF4F0199A79CB00DC7C4C /* infoIcon.png in Resources */,
 				CABFF4D619996C4600DC7C4C /* checkIcon@2x.png in Resources */,
 				CABFF40F1995ACA300DC7C4C /* largeAppIcon@2x.png in Resources */,
@@ -451,7 +475,9 @@
 				CABFF4321998478900DC7C4C /* defaultOval@2x.png in Resources */,
 				CABFF4C719995A7F00DC7C4C /* commentIcon@2x.png in Resources */,
 				CABFF4281998436600DC7C4C /* cameraIcon@2x.png in Resources */,
+				CAFDD32E199BFA4B00BC0DFE /* noAccountsImage@2x.png in Resources */,
 				CABFF4261998436600DC7C4C /* cameraIcon.png in Resources */,
+				CAFDD32C199BFA4B00BC0DFE /* noAccountsImage.png in Resources */,
 				CABFF4121995ACA300DC7C4C /* mediumAppIcon@2x.png in Resources */,
 				CABFF4C519995A7F00DC7C4C /* commentIcon.png in Resources */,
 				CABFF4D719996C4600DC7C4C /* checkIcon@2x.png in Resources */,
@@ -485,6 +511,7 @@
 				CABFF3A8199531BB00DC7C4C /* OverlayView.m in Sources */,
 				CABFF3BE199551CE00DC7C4C /* UIView+MCSizes.m in Sources */,
 				CA6F58091994137200FF7783 /* main.m in Sources */,
+				CAFDD321199BF68C00BC0DFE /* CameraRollViewController.m in Sources */,
 				CABFF3B0199533CD00DC7C4C /* ActionButton.m in Sources */,
 				CABFF4DA19996E2000DC7C4C /* PhotoViewController.m in Sources */,
 				CA6F58381994176600FF7783 /* MainViewController.m in Sources */,
@@ -505,6 +532,7 @@
 				CABFF3BF199551CE00DC7C4C /* UIView+MCSizes.m in Sources */,
 				CABFF4161998360700DC7C4C /* TopBarView.m in Sources */,
 				CA6F58391994176600FF7783 /* MainViewController.m in Sources */,
+				CAFDD322199BF68C00BC0DFE /* CameraRollViewController.m in Sources */,
 				CABFF43E1999077A00DC7C4C /* InvisibleDragMagicButton.m in Sources */,
 				CABFF4CB19995D3D00DC7C4C /* AnimationHelper.m in Sources */,
 				CABFF4DB19996E2000DC7C4C /* PhotoViewController.m in Sources */,

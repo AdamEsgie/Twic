@@ -69,6 +69,8 @@
   [self.view addSubview:self.photoView];
   
   self.topBar = [[TopBarView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, buttonSize)];
+  [self.topBar.leftButton setImage:[ActionButtonHelper leftButtonDictionaryForState:cameraRollState][@"image"] forState:UIControlStateNormal];
+  [self.topBar.leftButton addTarget:self.topBar action:NSSelectorFromString([ActionButtonHelper leftButtonDictionaryForState:cameraRollState][@"selector"]) forControlEvents:UIControlEventTouchUpInside];
   [self.view addSubview:self.topBar];
   
   self.bottomBar = [[BottomBarView alloc] initWithFrame:CGRectMake(0, self.view.height-buttonSize, self.view.width, buttonSize)];

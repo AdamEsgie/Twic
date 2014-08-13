@@ -29,6 +29,7 @@
 @property (nonatomic, strong) PhotoViewController *photoViewController;
 @property (nonatomic, strong) NSArray *accounts;
 @property NSInteger indexOfSelectedAccount;
+@property BOOL shouldShowCameraRoll;
 @property BOOL animatingDrag;
 @property BOOL dragging;
 
@@ -73,6 +74,7 @@
     [self.photoViewController.photoView setImage:self.capturedImage];
   } else {
     self.photoViewController.topBar.accountLabel.text = @"No Accounts";
+    [self.photoViewController.photoView setImage:[UIImage imageNamed:@"noAccountsImage"]];
   }
 }
 
@@ -81,7 +83,7 @@
   [super viewDidAppear:animated];
   
   if (self.accounts.count > 0) {
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera] && !self.capturedImage) {
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera] && !self.capturedImage && !self.shouldShowCameraRoll) {
       
       [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
       
@@ -93,15 +95,14 @@
 
 - (void)showCameraForSource:(UIImagePickerControllerSourceType)sourceType animated:(BOOL)animated
 {
-//  self.cameraController = nil;
-//  [self.overlayView removeFromSuperview];
-//  self.overlayView = nil;
-  
+
   if (!self.cameraController) {
     self.cameraController = [[UIImagePickerController alloc] init];
-    self.cameraController.sourceType = sourceType;
     self.cameraController.delegate = self;
   }
+  
+  self.cameraController.sourceType = sourceType;
+  
   if (sourceType == UIImagePickerControllerSourceTypeCamera)
   {
     if (!self.overlayView) {
@@ -115,6 +116,8 @@
     self.cameraController.cameraViewTransform = [CameraScaleHelper scaleForFullScreen];
      self.cameraController.cameraOverlayView = self.overlayView;
   
+  } else if (sourceType == UIImagePickerControllerSourceTypePhotoLibrary) {
+    self.cameraController.navigationBarHidden = YES;
   }
   
   [self presentViewController:self.cameraController animated:animated completion:^{}];
@@ -160,6 +163,15 @@
     self.cameraController.cameraDevice = UIImagePickerControllerCameraDeviceFront;
   }
 }
+
+- (void)showPhotoLibrary
+{
+  self.shouldShowCameraRoll = YES;
+  
+  [self dismissViewControllerAnimated:NO completion:nil];
+  self.cameraController = nil;
+  [self showCameraForSource:UIImagePickerControllerSourceTypePhotoLibrary animated:NO];
+}
 #pragma mark - ActionButton Delegate
 - (void)twicTaken
 {
@@ -184,6 +196,14 @@
   }
   
   [self dismissViewControllerAnimated:NO completion:nil];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+  [self dismissViewControllerAnimated:NO completion:^{
+    [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
+    self.shouldShowCameraRoll = NO;
+  }];
 }
 
 #pragma mark - PhotoView Delegate

@@ -16,6 +16,12 @@ typedef NS_ENUM(NSInteger, ActionButtonState)
   cancelState = 3,
 };
 
+typedef NS_ENUM(NSInteger, LeftButtonState)
+{
+  cameraRollState = 0,
+  infoState = 1,
+};
+
 #define YellowButtonColor [UIColor colorWithRed:255/255.0f green:203/255.0f blue:1/255.0f alpha:1.00]
 #define RedButtonColor [UIColor colorWithRed:255/255.0f green:86/255.0f blue:1/255.0f alpha:1.00]
 #define GreenButtonColor [UIColor colorWithRed:0/255.0f green:206/255.0f blue:15/255.0f alpha:1.00]

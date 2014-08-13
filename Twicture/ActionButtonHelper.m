@@ -33,4 +33,18 @@
   return actionData[index];
 }
 
++(NSDictionary*)leftButtonDictionaryForState:(NSInteger)index
+{
+  NSArray *leftButtonData = @[@{@"name":@"photo",
+                            @"selector":NSStringFromSelector(@selector(rollTapped:)),
+                            @"image":[UIImage imageNamed:@"rollIcon"]
+                            },
+                          @{@"name":@"comment",
+                            @"selector":NSStringFromSelector(@selector(infoTapped:)),
+                            @"image":[UIImage imageNamed:@"infoIcon"]
+                            },
+                          ];
+  return leftButtonData[index];
+}
+
 @end
