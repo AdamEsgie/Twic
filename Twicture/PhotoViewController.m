@@ -15,6 +15,7 @@
 #import "ColorHelper.h"
 #import "InvisibleDragMagicButton.h"
 #import "AnimationHelper.h"
+#import "ProgressHUD.h"
 
 @interface PhotoViewController () <InvisibleButtonDelegate, ActionButtonDelegate>
 
@@ -24,6 +25,7 @@
 @property BOOL canceledTextField;
 @property BOOL animatingDrag;
 @property BOOL dragging;
+
 @end
 
 @implementation PhotoViewController
@@ -130,70 +132,102 @@
   
   CGPoint dragPoint = [[[event allTouches] anyObject] locationInView:self.view];
   
-  if (!self.animatingDrag) {
+  if (!self.animatingDrag && [self.delegate isInternetAvailable]) {
     self.topBar.backgroundColor = [ColorHelper colorForOffset:dragPoint.x];
     self.bottomBar.backgroundColor = [ColorHelper colorForOffset:dragPoint.x];
   }
   
   
   if (!self.animatingDrag) {
-    if (dragPoint.x <= self.view.width/3) {
+    
+    if (dragPoint.x <= buttonSize) {
+      if (![self.delegate isInternetAvailable]) {
+        [ProgressHUD showError:@"No Internet!"];
+        double delayInSeconds = 1.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+          [ProgressHUD dismiss];
+        });
+      } else {
       
-      [UIView animateWithDuration:0.15 animations:^{
-        self.animatingDrag = YES;
-        self.actionButton.center = CGPointMake(buttonSize/2, self.actionButton.center.y);
-        self.invisibleDragMagicButton.center = CGPointMake(buttonSize/2, self.invisibleDragMagicButton.center.y);
-        
-      }completion:^(BOOL finished) {
-        
-        self.topBar.backgroundColor = [ColorHelper colorForOffset:self.actionButton.center.x];
-        self.bottomBar.backgroundColor = [ColorHelper colorForOffset:self.actionButton.center.x];
-        
         [UIView animateWithDuration:0.15 animations:^{
-          self.actionButton.actionView.transform = [AnimationHelper scaleShrinkView:self.actionButton.actionView];
+          self.animatingDrag = YES;
+          self.actionButton.center = CGPointMake(buttonSize/2, self.actionButton.center.y);
+          self.invisibleDragMagicButton.center = CGPointMake(buttonSize/2, self.invisibleDragMagicButton.center.y);
+          
+        }completion:^(BOOL finished) {
+          
+          self.topBar.backgroundColor = RedButtonColor;
+          self.bottomBar.backgroundColor = RedButtonColor;
+          
+          [UIView animateWithDuration:0.15 animations:^{
+            self.actionButton.actionView.transform = [AnimationHelper scaleShrinkView:self.actionButton.actionView];
+            
+          } completion:^(BOOL finished) {
+            
+            [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:cancelState][@"image"]];
+            
+            [UIView animateWithDuration:0.2 delay:0.2 usingSpringWithDamping:0.2 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+              self.actionButton.actionView.transform = [AnimationHelper scaleExpandView:self.actionButton.actionView];
+            } completion:^(BOOL finished) {
+              
+              [self makeBarsYellow];
+              
+              [UIView animateWithDuration:0.10 animations:^{
+                self.invisibleDragMagicButton.center = CGPointMake(self.view.width/2, self.invisibleDragMagicButton.center.y);
+                self.actionButton.center = CGPointMake(self.view.width/2, self.actionButton.center.y);
+              } completion:^(BOOL finished) {
+                self.animatingDrag = NO;
+                [self.delegate shouldResetController];
+              }];
+            }];
+          }];
+        }];
+      }
+    } else if (dragPoint.x >= (self.view.width - buttonSize)) {
+      
+      if (![self.delegate isInternetAvailable]) {
+        [ProgressHUD showError:@"No Internet!"];
+        double delayInSeconds = 1.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+          [ProgressHUD dismiss];
+        });
+      } else {
+        [UIView animateWithDuration:0.15 animations:^{
+          self.animatingDrag = YES;
+          self.actionButton.center = CGPointMake(self.view.width-self.actionButton.width/2, self.actionButton.center.y);
+          self.invisibleDragMagicButton.center = CGPointMake(self.view.width-self.actionButton.width/2, self.invisibleDragMagicButton.center.y);;
           
         } completion:^(BOOL finished) {
           
-          [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:cancelState][@"image"]];
+          self.topBar.backgroundColor = GreenButtonColor;
+          self.bottomBar.backgroundColor = GreenButtonColor;
           
-          [UIView animateWithDuration:0.2 delay:0.2 usingSpringWithDamping:0.2 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            self.actionButton.actionView.transform = [AnimationHelper scaleExpandView:self.actionButton.actionView];
+          [UIView animateWithDuration:0.15 animations:^{
+            self.actionButton.actionView.transform = [AnimationHelper scaleShrinkView:self.actionButton.actionView];
+            
           } completion:^(BOOL finished) {
             
-            [self.delegate shouldResetController];
-            self.animatingDrag = NO;
-          }];
-        }];
-      }];
-      
-    } else if (dragPoint.x >= (self.view.width - self.view.width/3)) {
-      
-      [UIView animateWithDuration:0.15 animations:^{
-        self.animatingDrag = YES;
-        self.actionButton.center = CGPointMake(self.view.width-self.actionButton.width/2, self.actionButton.center.y);
-        self.invisibleDragMagicButton.center = CGPointMake(self.view.width-self.actionButton.width/2, self.invisibleDragMagicButton.center.y);;
-        
-      } completion:^(BOOL finished) {
-        
-        self.topBar.backgroundColor = [ColorHelper colorForOffset:self.actionButton.center.x];
-        self.bottomBar.backgroundColor = [ColorHelper colorForOffset:self.actionButton.center.x];
-        
-        [UIView animateWithDuration:0.15 animations:^{
-          self.actionButton.actionView.transform = [AnimationHelper scaleShrinkView:self.actionButton.actionView];
-          
-        } completion:^(BOOL finished) {
-          
-          [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:sendState][@"image"]];
-          
-          [UIView animateWithDuration:0.2 delay:0.2 usingSpringWithDamping:0.2 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            self.actionButton.actionView.transform = [AnimationHelper scaleExpandView:self.actionButton.actionView];
-          } completion:^(BOOL finished) {
+            [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:sendState][@"image"]];
             
-            [self.delegate shouldStartSendingTwic];
-            self.animatingDrag = NO;
+            [UIView animateWithDuration:0.2 delay:0.2 usingSpringWithDamping:0.2 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+              self.actionButton.actionView.transform = [AnimationHelper scaleExpandView:self.actionButton.actionView];
+            
+            } completion:^(BOOL finished) {
+              [self makeBarsYellow];
+              
+              [UIView animateWithDuration:0.10 animations:^{
+                self.invisibleDragMagicButton.center = CGPointMake(self.view.width/2, self.invisibleDragMagicButton.center.y);
+                self.actionButton.center = CGPointMake(self.view.width/2, self.actionButton.center.y);
+              } completion:^(BOOL finished) {
+                [self.delegate shouldStartSendingTwic];
+                self.animatingDrag = NO;
+              }];
+            }];
           }];
         }];
-      }];
+      }
       
     } else {
 
@@ -257,7 +291,9 @@
   [UIView animateWithDuration:duration animations:^{
     
     [UIView setAnimationCurve:curve];
+    if (!self.isInErrorState) {
     self.actionButton.actionView.transform = [AnimationHelper scaleShrinkView:self.actionButton.actionView];
+    }
     self.textField.frame = CGRectMake(self.textField.origin.x, self.view.height - self.textField.height, self.textField.width, self.textField.height);
     self.bottomBar.frame = CGRectMake(self.bottomBar.origin.x, self.view.height - self.bottomBar.height, self.bottomBar.width, self.bottomBar.height);
     self.actionButton.frame = CGRectMake(self.actionButton.origin.x, self.view.height - self.actionButton.height, self.actionButton.width, self.actionButton.height);
@@ -265,23 +301,35 @@
     
     if (self.canceledTextField) {
       [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:commentState][@"image"]];
-    } else {
+    } else if (!self.isInErrorState) {
       [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:photoState][@"image"]];
     }
-    self.topBar.backgroundColor = YellowButtonColor;
-    self.bottomBar.backgroundColor = YellowButtonColor;
+
     
     [UIView animateWithDuration:0.10 animations:^{
-      self.actionButton.actionView.transform = [AnimationHelper scaleExpandView:self.actionButton.actionView];
+      if (!self.isInErrorState) {
+        self.actionButton.actionView.transform = [AnimationHelper scaleExpandView:self.actionButton.actionView];
+      }
       self.actionButton.center = CGPointMake(self.view.width/2, self.actionButton.center.y);
     } completion:^(BOOL finished) {
       
       if (!self.canceledTextField) {
+        [self makeBarsYellow];
         [self.delegate shouldResetController];
+        [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:commentState][@"image"]];
       }
       self.canceledTextField = NO;
+      
     }];
   }];
+}
+
+-(void)cleanupTextViewAndDismissKeyboardAfterNoInternetConnection
+{
+  [self cleanupTextView];
+  
+  self.topBar.backgroundColor = YellowButtonColor;
+  self.bottomBar.backgroundColor = YellowButtonColor;
 }
 
 -(void)cleanupTextViewAndDismissKeyboard
@@ -325,5 +373,11 @@
   UIGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cleanupOnTextViewCancel)];
   [self.tapView setGestureRecognizers:[NSArray arrayWithObject:tap]];
   
+}
+
+-(void)makeBarsYellow
+{
+  self.topBar.backgroundColor = YellowButtonColor;
+  self.bottomBar.backgroundColor = YellowButtonColor;
 }
 @end

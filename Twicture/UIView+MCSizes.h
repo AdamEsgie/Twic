@@ -1,9 +1,3 @@
-//
-//  UIView(MCSizes)
-//
-//  Created by Karol Kozub on 15.10.2012.
-//  Copyright (c) 2012 Macoscope. All rights reserved.
-//
 
 #import <UIKit/UIKit.h>
 

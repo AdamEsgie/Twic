@@ -20,6 +20,7 @@ typedef NS_ENUM(NSInteger, LeftButtonState)
 {
   cameraRollState = 0,
   infoState = 1,
+  cancelCameraRollState = 2,
 };
 
 #define YellowButtonColor [UIColor colorWithRed:255/255.0f green:203/255.0f blue:1/255.0f alpha:1.00]

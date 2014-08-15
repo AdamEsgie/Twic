@@ -15,6 +15,7 @@
 -(void)shouldStartSendingTwic;
 -(void)shouldResetController;
 - (BOOL)hasAccounts;
+-(BOOL)isInternetAvailable;
 
 @end
 
@@ -26,8 +27,10 @@
 @property (nonatomic, strong) TopBarView *topBar;
 @property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, strong) ActionButton *actionButton;
+@property BOOL isInErrorState;
 
 -(void)animateCommentButton;
 -(void)centerCommentButtonAnimated:(BOOL)animated;
 -(void)cleanupTextViewAndDismissKeyboard;
+-(void)cleanupTextViewAndDismissKeyboardAfterNoInternetConnection;
 @end

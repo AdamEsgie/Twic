@@ -20,18 +20,29 @@
 #import "PhotoViewController.h"
 #import "TwitterRequest.h"
 #import <Accounts/Accounts.h>
+#import "CameraRollViewController.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+#import "Reachability.h"
+#import "ProgressHUD.h"
+#import <AVFoundation/AVFoundation.h>
 
-@interface MainViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, ActionButtonDelegate, PhotoButtonDelegate, TwitterDelegate, TopBarDelegate>
+@interface MainViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, ActionButtonDelegate, PhotoButtonDelegate, TwitterDelegate, TopBarDelegate, CameraRollDelegate>
 
 @property (nonatomic, strong) UIImagePickerController *cameraController;
 @property (nonatomic, strong) OverlayView *overlayView;
 @property (nonatomic, strong) UIImage *capturedImage;
+@property (nonatomic, strong) CameraRollViewController *rollViewController;
 @property (nonatomic, strong) PhotoViewController *photoViewController;
 @property (nonatomic, strong) NSArray *accounts;
+@property (nonatomic, strong) ALAssetsGroup *group;
+@property (nonatomic, strong) ALAssetsLibrary *assetsLibrary;
+@property (nonatomic, strong) Reachability *internetReachable;
 @property NSInteger indexOfSelectedAccount;
 @property BOOL shouldShowCameraRoll;
 @property BOOL animatingDrag;
 @property BOOL dragging;
+@property BOOL isInternetReachable;
+@property BOOL isCameraReady;
 
 @end
 
@@ -45,13 +56,27 @@
       self.navigationBarHidden = YES;
       self.accounts = accounts;
       self.indexOfSelectedAccount = 0;
+      
+      //Test for Internet Connection
+      self.internetReachable = [Reachability reachabilityWithHostName:@"www.google.com"];
+      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
+      [[NSNotificationCenter defaultCenter] addObserver:self
+                                               selector:@selector(cameraIsReady:)
+                                                   name:AVCaptureSessionDidStartRunningNotification object:nil];
+      [self.internetReachable startNotifier];
     }
     return self;
+}
+
+- (void)dealloc
+{
+  NSLog(@"dealloc main view controller");
 }
 
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+  [self updateAssetGroup];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -68,7 +93,7 @@
     self.photoViewController.actionButton.delegate = self;
     [self pushViewController:self.photoViewController animated:NO];
   }
-  
+
   if ([self hasAccounts]) {
     self.photoViewController.topBar.accountLabel.text = [self currentAccountName];
     [self.photoViewController.photoView setImage:self.capturedImage];
@@ -84,7 +109,7 @@
   
   if (self.accounts.count > 0) {
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera] && !self.capturedImage && !self.shouldShowCameraRoll) {
-      
+      self.isCameraReady = NO;
       [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
       
     } else if (self.capturedImage) {
@@ -153,7 +178,6 @@
 {
   return self.accounts.count > 0;
 }
-
 #pragma mark - Top Bar Delegate
 - (void)changeCamera
 {
@@ -167,10 +191,22 @@
 - (void)showPhotoLibrary
 {
   self.shouldShowCameraRoll = YES;
-  
-  [self dismissViewControllerAnimated:NO completion:nil];
-  self.cameraController = nil;
-  [self showCameraForSource:UIImagePickerControllerSourceTypePhotoLibrary animated:NO];
+
+  [self dismissViewControllerAnimated:NO completion:^{
+    self.rollViewController = [[CameraRollViewController alloc] initWithAssetGroup:self.group] ;
+    self.rollViewController.view.frame = self.view.bounds;
+    self.rollViewController.topBar.delegate = self;
+    self.rollViewController.delegate = self;
+    [self presentViewController:self.rollViewController animated:YES completion:nil];
+    self.cameraController = nil;
+  }];
+}
+
+- (void)cancelCameraRoll
+{
+  [self dismissViewControllerAnimated:YES completion:^{
+    [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
+  }];
 }
 #pragma mark - ActionButton Delegate
 - (void)twicTaken
@@ -180,30 +216,41 @@
 
 -(void)sendTwic
 {
-  TwitterRequest *twitterRequest = [[TwitterRequest alloc] init];
-  twitterRequest.delegate = self;
-  [twitterRequest postImage:self.capturedImage withStatus:self.photoViewController.textField.text ?: @""];
-  [self.photoViewController cleanupTextViewAndDismissKeyboard];
+  if (self.isInternetReachable) {
+    TwitterRequest *twitterRequest = [[TwitterRequest alloc] init];
+    twitterRequest.delegate = self;
+    [twitterRequest postImage:self.capturedImage withStatus:self.photoViewController.textField.text ?: @""];
+    [self.photoViewController cleanupTextViewAndDismissKeyboard];
+  } else {
+    [ProgressHUD showError:@"Ack! No Internet!"];
+    self.photoViewController.isInErrorState = YES;
+    [self.photoViewController cleanupTextViewAndDismissKeyboardAfterNoInternetConnection];
+    
+    double delayInSeconds = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+      [ProgressHUD dismiss];
+      self.photoViewController.isInErrorState = NO;
+    });
+  }
 }
 
+-(BOOL)isCameraAvailable
+{
+  return self.isCameraReady;
+}
 #pragma mark - UIImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
   self.capturedImage = [info valueForKey:UIImagePickerControllerOriginalImage];
+  
+  UIImageWriteToSavedPhotosAlbum(self.capturedImage, nil, nil, nil);
   
   if (self.photoViewController) {
     [self.photoViewController centerCommentButtonAnimated:NO];
   }
   
   [self dismissViewControllerAnimated:NO completion:nil];
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-{
-  [self dismissViewControllerAnimated:NO completion:^{
-    [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
-    self.shouldShowCameraRoll = NO;
-  }];
 }
 
 #pragma mark - PhotoView Delegate
@@ -213,21 +260,63 @@
   TwitterRequest *twitterRequest = [[TwitterRequest alloc] init];
   twitterRequest.delegate = self;
   [twitterRequest postImage:self.capturedImage withStatus:self.photoViewController.textField.text ?: @""];
-  [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:YES];
+  [self shouldResetController];
 }
 -(void)shouldResetController
 {
-  [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:YES];
+  if (self.isInternetAvailable) {
+    self.capturedImage = nil;
+    self.isCameraReady = NO;
+    [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
+  }
 }
 
 #pragma mark - Twitter Delegate
--(void)didSuccessfullySendTweet
+-(void)errorSendingTweet
 {
+  [ProgressHUD showError:@"Woa! Your tweet got lost like light in Dragnipur. Try that again."];
+  double delayInSeconds = 3.0;
+  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+    [ProgressHUD dismiss];
+  });
+}
+
+#pragma mark - Camera Roll Delegate
+-(void)didSelectImageFromCameraRoll:(UIImage*)image
+{
+  self.capturedImage = image;
+  [self dismissViewControllerAnimated:NO completion:nil];
+}
+
+#pragma mark - ALAsset Prep
+-(void)updateAssetGroup
+{
+  if (self.assetsLibrary == nil) {
+    self.assetsLibrary = [[ALAssetsLibrary alloc] init];
+  }
+  [self.assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+    if (nil != group && [group numberOfAssets] > 0) {
+      self.group = group;
+    }
+  } failureBlock:^(NSError *error) {}];
+}
+
+#pragma mark - Internet Check
+- (void)reachabilityChanged:(NSNotification *)notification
+{
+  Reachability *reach = [notification object];
+  self.isInternetReachable = [reach isReachable];
   
 }
 
--(void)errorSendingTweet
+-(BOOL)isInternetAvailable;
 {
+  return self.isInternetReachable;
+}
 
+- (void)cameraIsReady:(NSNotification *)notification
+{
+  self.isCameraReady = YES;
 }
 @end

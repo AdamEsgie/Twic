@@ -40,7 +40,6 @@
                                         options:NSJSONReadingMutableContainers
                                           error:NULL];
         NSLog(@"[SUCCESS!] Created Tweet with ID: %@", postResponseData[@"id_str"]);
-        [self.delegate didSuccessfullySendTweet];
       }
       else {
         NSLog(@"[ERROR] Server responded: status code %d %@", statusCode,
@@ -75,6 +74,7 @@
     else {
       NSLog(@"[ERROR] An error occurred while asking for user authorization: %@",
             [error localizedDescription]);
+      [self.delegate errorSendingTweet];
     }
   };
   

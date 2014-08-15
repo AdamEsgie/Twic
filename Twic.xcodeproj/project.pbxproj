@@ -91,6 +91,17 @@
 		CAFDD32C199BFA4B00BC0DFE /* noAccountsImage.png in Resources */ = {isa = PBXBuildFile; fileRef = CAFDD329199BFA4B00BC0DFE /* noAccountsImage.png */; };
 		CAFDD32D199BFA4B00BC0DFE /* noAccountsImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CAFDD32A199BFA4B00BC0DFE /* noAccountsImage@2x.png */; };
 		CAFDD32E199BFA4B00BC0DFE /* noAccountsImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CAFDD32A199BFA4B00BC0DFE /* noAccountsImage@2x.png */; };
+		CAFDD335199C399600BC0DFE /* NSFileManager+TemporaryFileForAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFDD334199C399600BC0DFE /* NSFileManager+TemporaryFileForAsset.m */; };
+		CAFDD336199C399600BC0DFE /* NSFileManager+TemporaryFileForAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFDD334199C399600BC0DFE /* NSFileManager+TemporaryFileForAsset.m */; };
+		CAFDD339199C39FA00BC0DFE /* NSString+Md5Digest.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFDD338199C39FA00BC0DFE /* NSString+Md5Digest.m */; };
+		CAFDD33A199C39FA00BC0DFE /* NSString+Md5Digest.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFDD338199C39FA00BC0DFE /* NSString+Md5Digest.m */; };
+		CAFDD33F199D7D9300BC0DFE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAFDD33E199D7D9300BC0DFE /* SystemConfiguration.framework */; };
+		CAFDD342199D7E3200BC0DFE /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFDD341199D7E3200BC0DFE /* Reachability.m */; };
+		CAFDD343199D7E3200BC0DFE /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFDD341199D7E3200BC0DFE /* Reachability.m */; };
+		CAFDD348199D842C00BC0DFE /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CAFDD345199D842C00BC0DFE /* ProgressHUD.bundle */; };
+		CAFDD349199D842C00BC0DFE /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CAFDD345199D842C00BC0DFE /* ProgressHUD.bundle */; };
+		CAFDD34A199D842C00BC0DFE /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFDD347199D842C00BC0DFE /* ProgressHUD.m */; };
+		CAFDD34B199D842C00BC0DFE /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFDD347199D842C00BC0DFE /* ProgressHUD.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -174,6 +185,16 @@
 		CAFDD320199BF68C00BC0DFE /* CameraRollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraRollViewController.m; sourceTree = "<group>"; };
 		CAFDD329199BFA4B00BC0DFE /* noAccountsImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = noAccountsImage.png; sourceTree = "<group>"; };
 		CAFDD32A199BFA4B00BC0DFE /* noAccountsImage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "noAccountsImage@2x.png"; sourceTree = "<group>"; };
+		CAFDD333199C399600BC0DFE /* NSFileManager+TemporaryFileForAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+TemporaryFileForAsset.h"; sourceTree = "<group>"; };
+		CAFDD334199C399600BC0DFE /* NSFileManager+TemporaryFileForAsset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+TemporaryFileForAsset.m"; sourceTree = "<group>"; };
+		CAFDD337199C39FA00BC0DFE /* NSString+Md5Digest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Md5Digest.h"; sourceTree = "<group>"; };
+		CAFDD338199C39FA00BC0DFE /* NSString+Md5Digest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Md5Digest.m"; sourceTree = "<group>"; };
+		CAFDD33E199D7D9300BC0DFE /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		CAFDD340199D7E3200BC0DFE /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		CAFDD341199D7E3200BC0DFE /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		CAFDD345199D842C00BC0DFE /* ProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ProgressHUD.bundle; sourceTree = "<group>"; };
+		CAFDD346199D842C00BC0DFE /* ProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressHUD.h; sourceTree = "<group>"; };
+		CAFDD347199D842C00BC0DFE /* ProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressHUD.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +202,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAFDD33F199D7D9300BC0DFE /* SystemConfiguration.framework in Frameworks */,
 				CABFF4E21999B50400DC7C4C /* Accounts.framework in Frameworks */,
 				CABFF4E01999B3FD00DC7C4C /* Social.framework in Frameworks */,
 				CA6F57FF1994137200FF7783 /* CoreGraphics.framework in Frameworks */,
@@ -224,6 +246,7 @@
 		CA6F57FB1994137200FF7783 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CAFDD33E199D7D9300BC0DFE /* SystemConfiguration.framework */,
 				CABFF4E11999B50400DC7C4C /* Accounts.framework */,
 				CABFF4DF1999B3FD00DC7C4C /* Social.framework */,
 				CABFF4DD1999B16D00DC7C4C /* Twitter.framework */,
@@ -306,6 +329,13 @@
 				CABFF3B919953F5000DC7C4C /* UserDefaultsHelper.m */,
 				CABFF3BC199551CE00DC7C4C /* UIView+MCSizes.h */,
 				CABFF3BD199551CE00DC7C4C /* UIView+MCSizes.m */,
+				CAFDD333199C399600BC0DFE /* NSFileManager+TemporaryFileForAsset.h */,
+				CAFDD334199C399600BC0DFE /* NSFileManager+TemporaryFileForAsset.m */,
+				CAFDD337199C39FA00BC0DFE /* NSString+Md5Digest.h */,
+				CAFDD338199C39FA00BC0DFE /* NSString+Md5Digest.m */,
+				CAFDD340199D7E3200BC0DFE /* Reachability.h */,
+				CAFDD341199D7E3200BC0DFE /* Reachability.m */,
+				CAFDD344199D842C00BC0DFE /* ProgressHUD */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -364,6 +394,16 @@
 				CABFF3E11995941300DC7C4C /* ActionButtonHelper.m */,
 			);
 			name = Data;
+			sourceTree = "<group>";
+		};
+		CAFDD344199D842C00BC0DFE /* ProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				CAFDD345199D842C00BC0DFE /* ProgressHUD.bundle */,
+				CAFDD346199D842C00BC0DFE /* ProgressHUD.h */,
+				CAFDD347199D842C00BC0DFE /* ProgressHUD.m */,
+			);
+			path = ProgressHUD;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -450,6 +490,7 @@
 				CABFF4D219996C4600DC7C4C /* cancelIcon@2x.png in Resources */,
 				CA6F58151994137200FF7783 /* Images.xcassets in Resources */,
 				CABFF42F1998478900DC7C4C /* defaultOval.png in Resources */,
+				CAFDD348199D842C00BC0DFE /* ProgressHUD.bundle in Resources */,
 				CABFF4C419995A7F00DC7C4C /* commentIcon.png in Resources */,
 				CABFF4251998436600DC7C4C /* cameraIcon.png in Resources */,
 				CABFF4051995AC3A00DC7C4C /* smallAppIcon@2x.png in Resources */,
@@ -474,6 +515,7 @@
 			files = (
 				CABFF4321998478900DC7C4C /* defaultOval@2x.png in Resources */,
 				CABFF4C719995A7F00DC7C4C /* commentIcon@2x.png in Resources */,
+				CAFDD349199D842C00BC0DFE /* ProgressHUD.bundle in Resources */,
 				CABFF4281998436600DC7C4C /* cameraIcon@2x.png in Resources */,
 				CAFDD32E199BFA4B00BC0DFE /* noAccountsImage@2x.png in Resources */,
 				CABFF4261998436600DC7C4C /* cameraIcon.png in Resources */,
@@ -505,6 +547,7 @@
 				CA6F580D1994137200FF7783 /* AppDelegate.m in Sources */,
 				CABFF4E51999B53300DC7C4C /* TwitterRequest.m in Sources */,
 				CABFF3E21995941300DC7C4C /* ActionButtonHelper.m in Sources */,
+				CAFDD34A199D842C00BC0DFE /* ProgressHUD.m in Sources */,
 				CABFF3A419951CBF00DC7C4C /* CameraScaleHelper.m in Sources */,
 				CABFF43D1999077A00DC7C4C /* InvisibleDragMagicButton.m in Sources */,
 				CABFF4351998502000DC7C4C /* ColorHelper.m in Sources */,
@@ -513,12 +556,15 @@
 				CA6F58091994137200FF7783 /* main.m in Sources */,
 				CAFDD321199BF68C00BC0DFE /* CameraRollViewController.m in Sources */,
 				CABFF3B0199533CD00DC7C4C /* ActionButton.m in Sources */,
+				CAFDD339199C39FA00BC0DFE /* NSString+Md5Digest.m in Sources */,
 				CABFF4DA19996E2000DC7C4C /* PhotoViewController.m in Sources */,
 				CA6F58381994176600FF7783 /* MainViewController.m in Sources */,
+				CAFDD342199D7E3200BC0DFE /* Reachability.m in Sources */,
 				CABFF4CA19995D3D00DC7C4C /* AnimationHelper.m in Sources */,
 				CABFF4151998360700DC7C4C /* TopBarView.m in Sources */,
 				CABFF3BA19953F5000DC7C4C /* UserDefaultsHelper.m in Sources */,
 				CABFF41919983D0B00DC7C4C /* BottomBarView.m in Sources */,
+				CAFDD335199C399600BC0DFE /* NSFileManager+TemporaryFileForAsset.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -528,6 +574,7 @@
 			files = (
 				CABFF4361998502000DC7C4C /* ColorHelper.m in Sources */,
 				CABFF3A9199531BB00DC7C4C /* OverlayView.m in Sources */,
+				CAFDD34B199D842C00BC0DFE /* ProgressHUD.m in Sources */,
 				CABFF3B1199533CD00DC7C4C /* ActionButton.m in Sources */,
 				CABFF3BF199551CE00DC7C4C /* UIView+MCSizes.m in Sources */,
 				CABFF4161998360700DC7C4C /* TopBarView.m in Sources */,
@@ -536,11 +583,14 @@
 				CABFF43E1999077A00DC7C4C /* InvisibleDragMagicButton.m in Sources */,
 				CABFF4CB19995D3D00DC7C4C /* AnimationHelper.m in Sources */,
 				CABFF4DB19996E2000DC7C4C /* PhotoViewController.m in Sources */,
+				CAFDD343199D7E3200BC0DFE /* Reachability.m in Sources */,
 				CABFF3A519951CBF00DC7C4C /* CameraScaleHelper.m in Sources */,
 				CA6F58281994137200FF7783 /* TwictureTests.m in Sources */,
 				CABFF3E31995941300DC7C4C /* ActionButtonHelper.m in Sources */,
 				CABFF3BB19953F5000DC7C4C /* UserDefaultsHelper.m in Sources */,
+				CAFDD33A199C39FA00BC0DFE /* NSString+Md5Digest.m in Sources */,
 				CABFF4E61999B53300DC7C4C /* TwitterRequest.m in Sources */,
+				CAFDD336199C399600BC0DFE /* NSFileManager+TemporaryFileForAsset.m in Sources */,
 				CABFF41A19983D0B00DC7C4C /* BottomBarView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

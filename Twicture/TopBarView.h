@@ -13,6 +13,7 @@
 - (NSString*)nextAccountName;
 - (void)changeCamera;
 - (void)showPhotoLibrary;
+- (void)cancelCameraRoll;
 
 @end
 

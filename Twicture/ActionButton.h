@@ -12,6 +12,8 @@
 
 -(void)twicTaken;
 -(void)sendTwic;
+-(BOOL)isInternetAvailable;
+-(BOOL)isCameraAvailable;
 
 @end
 

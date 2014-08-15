@@ -39,10 +39,14 @@
                             @"selector":NSStringFromSelector(@selector(rollTapped:)),
                             @"image":[UIImage imageNamed:@"rollIcon"]
                             },
-                          @{@"name":@"comment",
+                          @{@"name":@"info",
                             @"selector":NSStringFromSelector(@selector(infoTapped:)),
                             @"image":[UIImage imageNamed:@"infoIcon"]
                             },
+                            @{@"name":@"cancel",
+                              @"selector":NSStringFromSelector(@selector(cancelCameraRollTapped:)),
+                              @"image":[UIImage imageNamed:@"cancelIcon"]
+                              },
                           ];
   return leftButtonData[index];
 }

@@ -39,11 +39,16 @@
 
 -(IBAction)takePhotoTapped:(id)sender
 {
-  [self.delegate twicTaken];
+  if ([self.delegate isCameraAvailable]) {
+    [self.delegate twicTaken];
+  }
 }
 
 -(IBAction)sendTapped:(id)sender
 {
+  if (![self.delegate isInternetAvailable]) {
+    [self.actionView setImage:[ActionButtonHelper actionDictionaryForState:cancelState][@"image"]];
+  }
   [self.delegate sendTwic];
 }
 

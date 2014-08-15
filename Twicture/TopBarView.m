@@ -52,6 +52,11 @@
   
 }
 
+-(IBAction)cancelCameraRollTapped:(id)sender
+{
+  [self.delegate cancelCameraRoll];
+}
+
 -(IBAction)frontCameraButtonTapped:(id)sender
 {
   [self.delegate changeCamera];
