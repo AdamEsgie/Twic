@@ -55,7 +55,16 @@
       self.view.frame = frame;
       self.navigationBarHidden = YES;
       self.accounts = accounts;
+      
       self.indexOfSelectedAccount = 0;
+      
+      if ([[UserDefaultsHelper lastViewedAccount] length] > 0) {
+        [accounts enumerateObjectsUsingBlock:^(ACAccount *acct, NSUInteger idx, BOOL *stop) {
+          if ([[acct accountDescription] isEqualToString:[UserDefaultsHelper lastViewedAccount]]) {
+            self.indexOfSelectedAccount = idx;
+          }
+        }];
+      }
       
       //Test for Internet Connection
       self.internetReachable = [Reachability reachabilityWithHostName:@"www.google.com"];
@@ -64,6 +73,7 @@
                                                selector:@selector(cameraIsReady:)
                                                    name:AVCaptureSessionDidStartRunningNotification object:nil];
       [self.internetReachable startNotifier];
+      self.isInternetReachable = YES;
     }
     return self;
 }
@@ -71,6 +81,13 @@
 - (void)dealloc
 {
   NSLog(@"dealloc main view controller");
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+  [super viewWillDisappear:animated];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
+  [UserDefaultsHelper setLastViewedAccount:self.currentAccount];
 }
 
 - (void)viewDidLoad
@@ -113,7 +130,7 @@
       [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
       
     } else if (self.capturedImage) {
-      [self.photoViewController animateCommentButton];
+      [self.photoViewController animateButtons];
     }
   }
 }
@@ -136,16 +153,38 @@
       self.overlayView.topBar.delegate = self;
       self.overlayView.actionButton.delegate = self;
     }
-    
+    self.cameraController.cameraDevice = UIImagePickerControllerCameraDeviceRear;
     self.cameraController.showsCameraControls = NO;
     self.cameraController.cameraViewTransform = [CameraScaleHelper scaleForFullScreen];
-     self.cameraController.cameraOverlayView = self.overlayView;
+    self.cameraController.cameraOverlayView = self.overlayView;
   
   } else if (sourceType == UIImagePickerControllerSourceTypePhotoLibrary) {
     self.cameraController.navigationBarHidden = YES;
   }
   
-  [self presentViewController:self.cameraController animated:animated completion:^{}];
+  [self presentViewController:self.cameraController animated:animated completion:^{
+    if (self.photoViewController.didCancelPost) {
+      self.photoViewController.didCancelPost = NO;
+      [UIView animateWithDuration:0 animations:^{
+        self.overlayView.topBar.leftButton.transform = [AnimationHelper scaleShrinkView:self.overlayView.topBar.leftButton];
+        self.overlayView.topBar.rightButton.transform = [AnimationHelper scaleShrinkView:self.overlayView.topBar.rightButton];
+        
+        
+      } completion:^(BOOL finished) {
+        [self.overlayView.topBar.leftButton setImage:[ActionButtonHelper topBarButtonDictionaryForState:cameraRollState][@"image"] forState:UIControlStateNormal];
+        [self.overlayView.topBar.rightButton setImage:[ActionButtonHelper topBarButtonDictionaryForState:frontCameraState][@"image"] forState:UIControlStateNormal];
+        
+        [UIView animateWithDuration:0.2 delay:0.2 usingSpringWithDamping:0.2 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+
+          self.overlayView.topBar.leftButton.transform = [AnimationHelper scaleExpandView:self.overlayView.topBar.leftButton];
+          self.overlayView.topBar.rightButton.transform = [AnimationHelper scaleExpandView:self.overlayView.topBar.rightButton];
+        } completion:^(BOOL finished) {
+          
+        }];
+      }];    
+    }
+  
+  }];
 }
 
 - (void)didReceiveMemoryWarning
@@ -207,6 +246,16 @@
   [self dismissViewControllerAnimated:YES completion:^{
     [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
   }];
+}
+
+-(UIImage*)currentImage
+{
+  return self.photoViewController.photoView.image;
+}
+
+- (void)changeToFilteredImage:(UIImage*)image
+{
+  self.photoViewController.photoView.image = image;
 }
 #pragma mark - ActionButton Delegate
 - (void)twicTaken
@@ -272,9 +321,10 @@
 }
 
 #pragma mark - Twitter Delegate
--(void)errorSendingTweet
+-(void)errorSendingTweetWithString:(NSString*)string
 {
-  [ProgressHUD showError:@"Woa! Your tweet got lost like light in Dragnipur. Try that again."];
+  [ProgressHUD showError:[NSString stringWithFormat:@"Error while posting - %@", string]];
+  NSLog(@"%@",[NSString stringWithFormat:@"Error while posting - %@", string]);
   double delayInSeconds = 3.0;
   dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
   dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -305,9 +355,7 @@
 #pragma mark - Internet Check
 - (void)reachabilityChanged:(NSNotification *)notification
 {
-  Reachability *reach = [notification object];
-  self.isInternetReachable = [reach isReachable];
-  
+  self.isInternetReachable = [[notification object] isReachable];
 }
 
 -(BOOL)isInternetAvailable;
@@ -315,6 +363,7 @@
   return self.isInternetReachable;
 }
 
+#pragma mark - Camera Check
 - (void)cameraIsReady:(NSNotification *)notification
 {
   self.isCameraReady = YES;

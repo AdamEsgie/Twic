@@ -8,6 +8,7 @@
 
 #import "ActionButtonHelper.h"
 #import "ActionButton.h"
+#import "TopBarView.h"
 
 @implementation ActionButtonHelper
 
@@ -33,22 +34,30 @@
   return actionData[index];
 }
 
-+(NSDictionary*)leftButtonDictionaryForState:(NSInteger)index
++(NSDictionary*)topBarButtonDictionaryForState:(NSInteger)index
 {
-  NSArray *leftButtonData = @[@{@"name":@"photo",
+  NSArray *buttonData = @[@{@"name":@"photo",
                             @"selector":NSStringFromSelector(@selector(rollTapped:)),
                             @"image":[UIImage imageNamed:@"rollIcon"]
                             },
                           @{@"name":@"info",
-                            @"selector":NSStringFromSelector(@selector(infoTapped:)),
+                            @"selector":NSStringFromSelector(@selector(infoButtonTapped:)),
                             @"image":[UIImage imageNamed:@"infoIcon"]
                             },
-                            @{@"name":@"cancel",
-                              @"selector":NSStringFromSelector(@selector(cancelCameraRollTapped:)),
-                              @"image":[UIImage imageNamed:@"cancelIcon"]
-                              },
+                          @{@"name":@"cancel",
+                            @"selector":NSStringFromSelector(@selector(cancelCameraRollTapped:)),
+                            @"image":[UIImage imageNamed:@"cancelIcon"]
+                            },
+                          @{@"name":@"frontCamera",
+                            @"selector":NSStringFromSelector(@selector(frontCameraButtonTapped:)),
+                            @"image":[UIImage imageNamed:@"frontCameraIcon"]
+                            },
+                          @{@"name":@"filter",
+                            @"selector":NSStringFromSelector(@selector(filterButtonTapped:)),
+                            @"image":[UIImage imageNamed:@"filterIcon"]
+                            },
                           ];
-  return leftButtonData[index];
+  return buttonData[index];
 }
 
 @end

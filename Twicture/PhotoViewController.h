@@ -28,8 +28,9 @@
 @property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, strong) ActionButton *actionButton;
 @property BOOL isInErrorState;
+@property BOOL didCancelPost;
 
--(void)animateCommentButton;
+-(void)animateButtons;
 -(void)centerCommentButtonAnimated:(BOOL)animated;
 -(void)cleanupTextViewAndDismissKeyboard;
 -(void)cleanupTextViewAndDismissKeyboardAfterNoInternetConnection;

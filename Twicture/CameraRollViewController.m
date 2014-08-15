@@ -54,11 +54,11 @@ static NSString * const CellReuseIdentifier = @"Cell";
   [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:CellReuseIdentifier];
   
   self.topBar = [[TopBarView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, buttonSize)];
-  [self.topBar.leftButton setImage:[ActionButtonHelper leftButtonDictionaryForState:cancelCameraRollState][@"image"] forState:UIControlStateNormal];
-  [self.topBar.leftButton addTarget:self.topBar action:NSSelectorFromString([ActionButtonHelper leftButtonDictionaryForState:cancelCameraRollState][@"selector"]) forControlEvents:UIControlEventTouchUpInside];
+  [self.topBar.leftButton setImage:[ActionButtonHelper topBarButtonDictionaryForState:cancelCameraRollState][@"image"] forState:UIControlStateNormal];
+  [self.topBar.leftButton addTarget:self.topBar action:NSSelectorFromString([ActionButtonHelper topBarButtonDictionaryForState:cancelCameraRollState][@"selector"]) forControlEvents:UIControlEventTouchUpInside];
   self.topBar.accountLabel.text = @"Photos";
-  [self.topBar.frontCameraButton removeFromSuperview];
-  self.topBar.frontCameraButton = nil;
+  [self.topBar.rightButton removeFromSuperview];
+  self.topBar.rightButton = nil;
   [self.view addSubview:self.topBar];
 }
 - (void)viewWillAppear:(BOOL)animated

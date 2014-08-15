@@ -42,14 +42,11 @@
         NSLog(@"[SUCCESS!] Created Tweet with ID: %@", postResponseData[@"id_str"]);
       }
       else {
-        NSLog(@"[ERROR] Server responded: status code %d %@", statusCode,
-              [NSHTTPURLResponse localizedStringForStatusCode:statusCode]);
-        [self.delegate errorSendingTweet];
+        [self.delegate errorSendingTweetWithString:[error localizedDescription]];
       }
     }
     else {
-      NSLog(@"[ERROR] An error occurred while posting: %@", [error localizedDescription]);
-      [self.delegate errorSendingTweet];
+      [self.delegate errorSendingTweetWithString:[error localizedDescription]];
     }
   };
   
@@ -72,9 +69,7 @@
       [request performRequestWithHandler:requestHandler];
     }
     else {
-      NSLog(@"[ERROR] An error occurred while asking for user authorization: %@",
-            [error localizedDescription]);
-      [self.delegate errorSendingTweet];
+      [self.delegate errorSendingTweetWithString:[error localizedDescription]];
     }
   };
   

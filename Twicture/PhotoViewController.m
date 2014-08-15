@@ -71,8 +71,8 @@
   [self.view addSubview:self.photoView];
   
   self.topBar = [[TopBarView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, buttonSize)];
-  [self.topBar.leftButton setImage:[ActionButtonHelper leftButtonDictionaryForState:cameraRollState][@"image"] forState:UIControlStateNormal];
-  [self.topBar.leftButton addTarget:self.topBar action:NSSelectorFromString([ActionButtonHelper leftButtonDictionaryForState:cameraRollState][@"selector"]) forControlEvents:UIControlEventTouchUpInside];
+  [self.topBar.leftButton setImage:[ActionButtonHelper topBarButtonDictionaryForState:cameraRollState][@"image"] forState:UIControlStateNormal];
+  [self.topBar.leftButton addTarget:self.topBar action:NSSelectorFromString([ActionButtonHelper topBarButtonDictionaryForState:cameraRollState][@"selector"]) forControlEvents:UIControlEventTouchUpInside];
   [self.view addSubview:self.topBar];
   
   self.bottomBar = [[BottomBarView alloc] initWithFrame:CGRectMake(0, self.view.height-buttonSize, self.view.width, buttonSize)];
@@ -93,16 +93,25 @@
   }
 }
 
--(void)animateCommentButton
+-(void)animateButtons
 {
   [UIView animateWithDuration:0.15 animations:^{
     self.actionButton.actionView.transform = [AnimationHelper scaleShrinkView:self.actionButton.actionView];
+    self.topBar.leftButton.transform = [AnimationHelper scaleShrinkView:self.topBar.leftButton];
+    self.topBar.rightButton.transform = [AnimationHelper scaleShrinkView:self.topBar.rightButton];
+    
     
   } completion:^(BOOL finished) {
     [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:commentState][@"image"]];
+    [self.topBar.leftButton setImage:[ActionButtonHelper topBarButtonDictionaryForState:infoState][@"image"] forState:UIControlStateNormal];
+    [self.topBar.leftButton addTarget:self.topBar action:NSSelectorFromString([ActionButtonHelper topBarButtonDictionaryForState:infoState][@"selector"]) forControlEvents:UIControlEventTouchUpInside];
+    [self.topBar.rightButton setImage:[ActionButtonHelper topBarButtonDictionaryForState:filterState][@"image"] forState:UIControlStateNormal];
+    [self.topBar.rightButton addTarget:self.topBar action:NSSelectorFromString([ActionButtonHelper topBarButtonDictionaryForState:filterState][@"selector"]) forControlEvents:UIControlEventTouchUpInside];
   
-    [UIView animateWithDuration:0.2 delay:0.2 usingSpringWithDamping:0.2 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+    [UIView animateWithDuration:0.15 delay:0.2 usingSpringWithDamping:0.2 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseInOut animations:^{
       self.actionButton.actionView.transform = [AnimationHelper scaleExpandView:self.actionButton.actionView];
+      self.topBar.leftButton.transform = [AnimationHelper scaleExpandView:self.topBar.leftButton];
+      self.topBar.rightButton.transform = [AnimationHelper scaleExpandView:self.topBar.rightButton];
     } completion:^(BOOL finished) {
       
     }];
@@ -141,14 +150,6 @@
   if (!self.animatingDrag) {
     
     if (dragPoint.x <= buttonSize) {
-      if (![self.delegate isInternetAvailable]) {
-        [ProgressHUD showError:@"No Internet!"];
-        double delayInSeconds = 1.0;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-          [ProgressHUD dismiss];
-        });
-      } else {
       
         [UIView animateWithDuration:0.15 animations:^{
           self.animatingDrag = YES;
@@ -178,12 +179,12 @@
                 self.actionButton.center = CGPointMake(self.view.width/2, self.actionButton.center.y);
               } completion:^(BOOL finished) {
                 self.animatingDrag = NO;
+                self.didCancelPost = YES;
                 [self.delegate shouldResetController];
               }];
             }];
           }];
         }];
-      }
     } else if (dragPoint.x >= (self.view.width - buttonSize)) {
       
       if (![self.delegate isInternetAvailable]) {

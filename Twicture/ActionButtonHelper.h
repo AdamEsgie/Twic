@@ -11,6 +11,6 @@
 @interface ActionButtonHelper : NSObject
 
 +(NSDictionary*)actionDictionaryForState:(NSInteger)index;
-+(NSDictionary*)leftButtonDictionaryForState:(NSInteger)index;
++(NSDictionary*)topBarButtonDictionaryForState:(NSInteger)index;
 
 @end

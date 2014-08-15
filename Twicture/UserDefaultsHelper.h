@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Accounts/Accounts.h>
 
 typedef NS_ENUM(NSInteger, ActionButtonState)
 {
@@ -21,6 +22,8 @@ typedef NS_ENUM(NSInteger, LeftButtonState)
   cameraRollState = 0,
   infoState = 1,
   cancelCameraRollState = 2,
+  frontCameraState = 3,
+  filterState = 4,
 };
 
 #define YellowButtonColor [UIColor colorWithRed:255/255.0f green:203/255.0f blue:1/255.0f alpha:1.00]
@@ -32,6 +35,13 @@ typedef NS_ENUM(NSInteger, LeftButtonState)
 
 static const CGFloat buttonSize = 64;
 
+extern NSString* const UserDefaultsHelperSettingRunMoreThanOnce;
+extern NSString* const UserDefaultsHelperSettingLastAccount;
+
 @interface UserDefaultsHelper : NSObject
+
++ (void)setup;
++ (id)lastViewedAccount;
++ (void)setLastViewedAccount:(ACAccount*)account;
 
 @end
