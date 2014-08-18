@@ -25,6 +25,7 @@
 #import "Reachability.h"
 #import "ProgressHUD.h"
 #import <AVFoundation/AVFoundation.h>
+#import "InfoViewController.h"
 
 @interface MainViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, ActionButtonDelegate, PhotoButtonDelegate, TwitterDelegate, TopBarDelegate, CameraRollDelegate>
 
@@ -37,8 +38,10 @@
 @property (nonatomic, strong) ALAssetsGroup *group;
 @property (nonatomic, strong) ALAssetsLibrary *assetsLibrary;
 @property (nonatomic, strong) Reachability *internetReachable;
+@property (nonatomic, strong) InfoViewController *infoController;
 @property NSInteger indexOfSelectedAccount;
 @property BOOL shouldShowCameraRoll;
+@property BOOL isPresentingInfoController;
 @property BOOL animatingDrag;
 @property BOOL dragging;
 @property BOOL isInternetReachable;
@@ -55,25 +58,7 @@
       self.view.frame = frame;
       self.navigationBarHidden = YES;
       self.accounts = accounts;
-      
       self.indexOfSelectedAccount = 0;
-      
-      if ([[UserDefaultsHelper lastViewedAccount] length] > 0) {
-        [accounts enumerateObjectsUsingBlock:^(ACAccount *acct, NSUInteger idx, BOOL *stop) {
-          if ([[acct accountDescription] isEqualToString:[UserDefaultsHelper lastViewedAccount]]) {
-            self.indexOfSelectedAccount = idx;
-          }
-        }];
-      }
-      
-      //Test for Internet Connection
-      self.internetReachable = [Reachability reachabilityWithHostName:@"www.google.com"];
-      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
-      [[NSNotificationCenter defaultCenter] addObserver:self
-                                               selector:@selector(cameraIsReady:)
-                                                   name:AVCaptureSessionDidStartRunningNotification object:nil];
-      [self.internetReachable startNotifier];
-      self.isInternetReachable = YES;
     }
     return self;
 }
@@ -81,12 +66,13 @@
 - (void)dealloc
 {
   NSLog(@"dealloc main view controller");
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:AVCaptureSessionDidStartRunningNotification object:nil];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
 {
   [super viewWillDisappear:animated];
-  [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
   [UserDefaultsHelper setLastViewedAccount:self.currentAccount];
 }
 
@@ -94,6 +80,20 @@
 {
   [super viewDidLoad];
   [self updateAssetGroup];
+
+  self.internetReachable = [Reachability reachabilityWithHostName:@"www.google.com"];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cameraIsReady:) name:AVCaptureSessionDidStartRunningNotification object:nil];
+  [self.internetReachable startNotifier];
+  self.isInternetReachable = YES;
+  
+  if ([[UserDefaultsHelper lastViewedAccount] length] > 0) {
+    [self.accounts enumerateObjectsUsingBlock:^(ACAccount *acct, NSUInteger idx, BOOL *stop) {
+      if ([[acct accountDescription] isEqualToString:[UserDefaultsHelper lastViewedAccount]]) {
+        self.indexOfSelectedAccount = idx;
+      }
+    }];
+  }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -113,6 +113,7 @@
 
   if ([self hasAccounts]) {
     self.photoViewController.topBar.accountLabel.text = [self currentAccountName];
+    self.photoViewController.originalImage = self.capturedImage;
     [self.photoViewController.photoView setImage:self.capturedImage];
   } else {
     self.photoViewController.topBar.accountLabel.text = @"No Accounts";
@@ -217,6 +218,12 @@
 {
   return self.accounts.count > 0;
 }
+
+-(BOOL)isCameraAvailable
+{
+  return self.isCameraReady;
+}
+
 #pragma mark - Top Bar Delegate
 - (void)changeCamera
 {
@@ -244,18 +251,32 @@
 - (void)cancelCameraRoll
 {
   [self dismissViewControllerAnimated:YES completion:^{
-    [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
+    if (!self.isPresentingInfoController) {
+      [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
+    } else {
+      self.isPresentingInfoController = NO;
+    }
   }];
 }
 
--(UIImage*)currentImage
+-(UIImage*)originalImage
 {
-  return self.photoViewController.photoView.image;
+  return self.photoViewController.originalImage;
 }
 
 - (void)changeToFilteredImage:(UIImage*)image
 {
   self.photoViewController.photoView.image = image;
+}
+
+- (void)showInfo
+{
+  self.infoController = [[InfoViewController alloc] init] ;
+  self.infoController.view.frame = self.view.bounds;
+  self.infoController.topBar.delegate = self;
+  self.isPresentingInfoController = YES;
+  [self presentViewController:self.infoController animated:YES completion:nil];
+  self.cameraController = nil;
 }
 #pragma mark - ActionButton Delegate
 - (void)twicTaken
@@ -268,7 +289,7 @@
   if (self.isInternetReachable) {
     TwitterRequest *twitterRequest = [[TwitterRequest alloc] init];
     twitterRequest.delegate = self;
-    [twitterRequest postImage:self.capturedImage withStatus:self.photoViewController.textField.text ?: @""];
+    [twitterRequest postImage:self.photoViewController.photoView.image withStatus:self.photoViewController.textField.text ?: @""];
     [self.photoViewController cleanupTextViewAndDismissKeyboard];
   } else {
     [ProgressHUD showError:@"Ack! No Internet!"];
@@ -284,10 +305,6 @@
   }
 }
 
--(BOOL)isCameraAvailable
-{
-  return self.isCameraReady;
-}
 #pragma mark - UIImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
@@ -313,11 +330,14 @@
 }
 -(void)shouldResetController
 {
-  if (self.isInternetAvailable) {
-    self.capturedImage = nil;
-    self.isCameraReady = NO;
-    [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
-  }
+  self.capturedImage = nil;
+  self.isCameraReady = NO;
+
+  [self.photoViewController.topBar.leftButton setImage:[ActionButtonHelper topBarButtonDictionaryForState:cameraRollState][@"image"] forState:UIControlStateNormal];
+  [self.photoViewController.topBar.rightButton setImage:[ActionButtonHelper topBarButtonDictionaryForState:frontCameraState][@"image"] forState:UIControlStateNormal];
+  [self.photoViewController.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:photoState][@"image"]];
+  
+  [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
 }
 
 #pragma mark - Twitter Delegate

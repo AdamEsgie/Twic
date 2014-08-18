@@ -20,7 +20,6 @@
 @interface PhotoViewController () <InvisibleButtonDelegate, ActionButtonDelegate>
 
 @property (nonatomic, strong) InvisibleDragMagicButton *invisibleDragMagicButton;
-@property (nonatomic, strong) UIImage *photoTakenImage;
 @property (nonatomic, strong) UIView *tapView;
 @property BOOL canceledTextField;
 @property BOOL animatingDrag;
@@ -34,7 +33,7 @@
 {
     self = [super init];
     if (self) {
-      self.photoTakenImage = image;
+      
     }
     return self;
 }
@@ -67,7 +66,6 @@
 -(void)setup
 {
   self.photoView = [[UIImageView alloc] initWithFrame:CGRectMake(0, buttonSize, self.view.width, self.view.height-buttonSize*2)];
-  [self.photoView setImage:self.photoTakenImage];
   [self.view addSubview:self.photoView];
   
   self.topBar = [[TopBarView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, buttonSize)];

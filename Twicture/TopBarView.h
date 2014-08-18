@@ -15,7 +15,8 @@
 - (void)showPhotoLibrary;
 - (void)cancelCameraRoll;
 - (void)changeToFilteredImage:(UIImage*)image;
-- (UIImage*)currentImage;
+- (UIImage*)originalImage;
+- (void)showInfo;
 @end
 
 @interface TopBarView : UIView
@@ -26,6 +27,7 @@
 @property (nonatomic, strong) UIButton *leftButton;
 @property (nonatomic, strong) UIButton *accountButton;
 @property (nonatomic, strong) UILabel *accountLabel;
+@property NSInteger filter;
 
 - (id)initWithFrame:(CGRect)frame andDelegate:(id<TopBarDelegate>)delegate;
 -(IBAction)rollTapped:(id)sender;

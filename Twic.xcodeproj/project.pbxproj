@@ -23,6 +23,8 @@
 		CA6F58391994176600FF7783 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA6F58371994176600FF7783 /* MainViewController.m */; };
 		CAB132D9199E60A900C43B41 /* filterIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CAB132D7199E60A900C43B41 /* filterIcon.png */; };
 		CAB132DA199E60A900C43B41 /* filterIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CAB132D8199E60A900C43B41 /* filterIcon@2x.png */; };
+		CAB132E519A1898100C43B41 /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAB132E419A1898100C43B41 /* InfoViewController.m */; };
+		CAB132E619A1898100C43B41 /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAB132E419A1898100C43B41 /* InfoViewController.m */; };
 		CABFF3A419951CBF00DC7C4C /* CameraScaleHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CABFF3A319951CBF00DC7C4C /* CameraScaleHelper.m */; };
 		CABFF3A519951CBF00DC7C4C /* CameraScaleHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CABFF3A319951CBF00DC7C4C /* CameraScaleHelper.m */; };
 		CABFF3A8199531BB00DC7C4C /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = CABFF3A7199531BB00DC7C4C /* OverlayView.m */; };
@@ -137,6 +139,8 @@
 		CA6F58371994176600FF7783 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		CAB132D7199E60A900C43B41 /* filterIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = filterIcon.png; sourceTree = "<group>"; };
 		CAB132D8199E60A900C43B41 /* filterIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "filterIcon@2x.png"; sourceTree = "<group>"; };
+		CAB132E319A1898100C43B41 /* InfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoViewController.h; sourceTree = "<group>"; };
+		CAB132E419A1898100C43B41 /* InfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoViewController.m; sourceTree = "<group>"; };
 		CABFF3A219951CBF00DC7C4C /* CameraScaleHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraScaleHelper.h; sourceTree = "<group>"; };
 		CABFF3A319951CBF00DC7C4C /* CameraScaleHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraScaleHelper.m; sourceTree = "<group>"; };
 		CABFF3A6199531BB00DC7C4C /* OverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayView.h; sourceTree = "<group>"; };
@@ -312,6 +316,8 @@
 				CA6F58371994176600FF7783 /* MainViewController.m */,
 				CABFF4D819996E2000DC7C4C /* PhotoViewController.h */,
 				CABFF4D919996E2000DC7C4C /* PhotoViewController.m */,
+				CAB132E319A1898100C43B41 /* InfoViewController.h */,
+				CAB132E419A1898100C43B41 /* InfoViewController.m */,
 				CAFDD31F199BF68C00BC0DFE /* CameraRollViewController.h */,
 				CAFDD320199BF68C00BC0DFE /* CameraRollViewController.m */,
 				CABFF4DC1999795F00DC7C4C /* SupplementalViews */,
@@ -554,6 +560,7 @@
 			files = (
 				CA6F580D1994137200FF7783 /* AppDelegate.m in Sources */,
 				CABFF4E51999B53300DC7C4C /* TwitterRequest.m in Sources */,
+				CAB132E519A1898100C43B41 /* InfoViewController.m in Sources */,
 				CABFF3E21995941300DC7C4C /* ActionButtonHelper.m in Sources */,
 				CAFDD34A199D842C00BC0DFE /* ProgressHUD.m in Sources */,
 				CABFF3A419951CBF00DC7C4C /* CameraScaleHelper.m in Sources */,
@@ -585,6 +592,7 @@
 				CAFDD34B199D842C00BC0DFE /* ProgressHUD.m in Sources */,
 				CABFF3B1199533CD00DC7C4C /* ActionButton.m in Sources */,
 				CABFF3BF199551CE00DC7C4C /* UIView+MCSizes.m in Sources */,
+				CAB132E619A1898100C43B41 /* InfoViewController.m in Sources */,
 				CABFF4161998360700DC7C4C /* TopBarView.m in Sources */,
 				CA6F58391994176600FF7783 /* MainViewController.m in Sources */,
 				CAFDD322199BF68C00BC0DFE /* CameraRollViewController.m in Sources */,

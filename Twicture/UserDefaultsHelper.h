@@ -17,7 +17,7 @@ typedef NS_ENUM(NSInteger, ActionButtonState)
   cancelState = 3,
 };
 
-typedef NS_ENUM(NSInteger, LeftButtonState)
+typedef NS_ENUM(NSInteger, TopBarButtonState)
 {
   cameraRollState = 0,
   infoState = 1,
@@ -26,12 +26,20 @@ typedef NS_ENUM(NSInteger, LeftButtonState)
   filterState = 4,
 };
 
+typedef NS_ENUM(NSInteger, Filters)
+{
+  originalPhoto = 0,
+  chromePhoto = 1,
+  blackAndWhitePhoto = 2,
+};
+
 #define YellowButtonColor [UIColor colorWithRed:255/255.0f green:203/255.0f blue:1/255.0f alpha:1.00]
 #define RedButtonColor [UIColor colorWithRed:255/255.0f green:86/255.0f blue:1/255.0f alpha:1.00]
 #define GreenButtonColor [UIColor colorWithRed:0/255.0f green:206/255.0f blue:15/255.0f alpha:1.00]
 
 #define DefaultTitleFont [UIFont fontWithName:@"AvenirNextCondensed-Bold" size:20.0f]
 #define DefaultTextFieldFont [UIFont fontWithName:@"AvenirNextCondensed-Medium" size:20.0f]
+#define DefaultTextFieldLargeFont [UIFont fontWithName:@"AvenirNextCondensed-Medium" size:64.0f]
 
 static const CGFloat buttonSize = 64;
 

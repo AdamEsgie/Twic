@@ -18,6 +18,7 @@
       self.frame = frame;
       self.backgroundColor = YellowButtonColor;
       [self addButtons];
+      self.filter = originalPhoto;
     }
     return self;
 }
@@ -49,7 +50,7 @@
 
 -(IBAction)infoButtonTapped:(id)sender
 {
-  
+  [self.delegate showInfo];
 }
 
 -(IBAction)cancelCameraRollTapped:(id)sender
@@ -70,44 +71,31 @@
 
 -(IBAction)filterButtonTapped:(id)sender
 {
-  CIImage *beginImage = [[CIImage alloc] initWithCGImage:[self.delegate currentImage].CGImage options:nil];
+  CIImage *beginImage = [[CIImage alloc] initWithCGImage:[self.delegate originalImage].CGImage options:nil];
   
   CIContext *context = [CIContext contextWithOptions:nil];
+  CIFilter *filter;
   
-  CIFilter *filter = [CIFilter filterWithName:@"CISepiaTone"
-                                keysAndValues: kCIInputImageKey, beginImage, @"inputIntensity", @0.8, nil];
+  if (self.filter == originalPhoto) {
+    filter = [CIFilter filterWithName:@"CIPhotoEffectMono" keysAndValues:kCIInputImageKey, beginImage, nil];
+    self.filter = blackAndWhitePhoto;
+  } else if (self.filter == blackAndWhitePhoto) {
+    filter = [CIFilter filterWithName:@"CIPhotoEffectChrome" keysAndValues:kCIInputImageKey, beginImage, nil];
+    self.filter = chromePhoto;
+  } else {
+    self.filter = originalPhoto;
+    return [self.delegate changeToFilteredImage:[self.delegate originalImage]];
+  }
   
   CIImage *outputImage = [filter outputImage];
   CGImageRef cgimg = [context createCGImage:outputImage fromRect:[outputImage extent]];
   
-  UIImage *newImage = [UIImage imageWithCGImage:cgimg];
-  [self.delegate changeToFilteredImage:[self rotate:newImage andOrientation:newImage.imageOrientation]];
+  UIImage *newImage = [UIImage imageWithCGImage:cgimg scale:1.0 orientation:UIImageOrientationRight];
+  [self.delegate changeToFilteredImage:newImage];
   
   CGImageRelease(cgimg);
-  
 }
 
--(UIImage*) rotate:(UIImage*) src andOrientation:(UIImageOrientation)orientation
-{
-  UIGraphicsBeginImageContext(src.size);
-  
-  CGContextRef context=(UIGraphicsGetCurrentContext());
-  
-  if (orientation == UIImageOrientationRight) {
-    CGContextRotateCTM (context, 90/180*M_PI) ;
-  } else if (orientation == UIImageOrientationLeft) {
-    CGContextRotateCTM (context, -90/180*M_PI);
-  } else if (orientation == UIImageOrientationDown) {
 
-  } else if (orientation == UIImageOrientationUp) {
-    CGContextRotateCTM (context, 90/180*M_PI);
-  }
-  
-  [src drawAtPoint:CGPointMake(0, 0)];
-  UIImage *img=UIGraphicsGetImageFromCurrentImageContext();
-  UIGraphicsEndImageContext();
-  return img;
-  
-}
 
 @end

@@ -27,6 +27,7 @@
 @property (nonatomic, strong) TopBarView *topBar;
 @property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, strong) ActionButton *actionButton;
+@property (nonatomic, strong) UIImage *originalImage;
 @property BOOL isInErrorState;
 @property BOOL didCancelPost;
 
