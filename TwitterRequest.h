@@ -12,9 +12,9 @@
 
 @protocol TwitterDelegate <NSObject>
 
--(void)didSuccessfullySendTweet;
 -(void)errorSendingTweetWithString:(NSString*)string;
 -(ACAccount*)currentAccount;
+-(void)successSendingTweet;
 
 @end
 

@@ -39,6 +39,7 @@
 @property (nonatomic, strong) ALAssetsLibrary *assetsLibrary;
 @property (nonatomic, strong) Reachability *internetReachable;
 @property (nonatomic, strong) InfoViewController *infoController;
+
 @property NSInteger indexOfSelectedAccount;
 @property BOOL shouldShowCameraRoll;
 @property BOOL isPresentingInfoController;
@@ -80,12 +81,6 @@
 {
   [super viewDidLoad];
   [self updateAssetGroup];
-
-  self.internetReachable = [Reachability reachabilityWithHostName:@"www.google.com"];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cameraIsReady:) name:AVCaptureSessionDidStartRunningNotification object:nil];
-  [self.internetReachable startNotifier];
-  self.isInternetReachable = YES;
   
   if ([[UserDefaultsHelper lastViewedAccount] length] > 0) {
     [self.accounts enumerateObjectsUsingBlock:^(ACAccount *acct, NSUInteger idx, BOOL *stop) {
@@ -95,6 +90,8 @@
     }];
   }
 }
+
+
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -111,10 +108,19 @@
     [self pushViewController:self.photoViewController animated:NO];
   }
 
+  if (!self.internetReachable) {
+    self.internetReachable = [Reachability reachabilityWithHostName:@"www.google.com"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cameraIsReady:) name:AVCaptureSessionDidStartRunningNotification object:nil];
+    [self.internetReachable startNotifier];
+    self.isInternetReachable = YES;
+  }
+  
   if ([self hasAccounts]) {
     self.photoViewController.topBar.accountLabel.text = [self currentAccountName];
     self.photoViewController.originalImage = self.capturedImage;
     [self.photoViewController.photoView setImage:self.capturedImage];
+
   } else {
     self.photoViewController.topBar.accountLabel.text = @"No Accounts";
     [self.photoViewController.photoView setImage:[UIImage imageNamed:@"noAccountsImage"]];
@@ -266,7 +272,7 @@
 
 - (void)changeToFilteredImage:(UIImage*)image
 {
-  self.photoViewController.photoView.image = image;
+  [self.photoViewController.photoView setImage:image];
 }
 
 - (void)showInfo
@@ -325,7 +331,7 @@
 {
   TwitterRequest *twitterRequest = [[TwitterRequest alloc] init];
   twitterRequest.delegate = self;
-  [twitterRequest postImage:self.capturedImage withStatus:self.photoViewController.textField.text ?: @""];
+  [twitterRequest postImage:self.photoViewController.photoView.image withStatus:self.photoViewController.textField.text ?: @""];
   [self shouldResetController];
 }
 -(void)shouldResetController
@@ -350,6 +356,10 @@
   dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
     [ProgressHUD dismiss];
   });
+}
+
+-(void)successSendingTweet
+{
 }
 
 #pragma mark - Camera Roll Delegate

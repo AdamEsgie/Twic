@@ -39,6 +39,7 @@
         [NSJSONSerialization JSONObjectWithData:responseData
                                         options:NSJSONReadingMutableContainers
                                           error:NULL];
+        [self.delegate successSendingTweet];
         NSLog(@"[SUCCESS!] Created Tweet with ID: %@", postResponseData[@"id_str"]);
       }
       else {

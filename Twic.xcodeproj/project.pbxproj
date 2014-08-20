@@ -25,6 +25,7 @@
 		CAB132DA199E60A900C43B41 /* filterIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CAB132D8199E60A900C43B41 /* filterIcon@2x.png */; };
 		CAB132E519A1898100C43B41 /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAB132E419A1898100C43B41 /* InfoViewController.m */; };
 		CAB132E619A1898100C43B41 /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAB132E419A1898100C43B41 /* InfoViewController.m */; };
+		CAB132E819A23B4A00C43B41 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAB132E719A23B4A00C43B41 /* CoreImage.framework */; };
 		CABFF3A419951CBF00DC7C4C /* CameraScaleHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CABFF3A319951CBF00DC7C4C /* CameraScaleHelper.m */; };
 		CABFF3A519951CBF00DC7C4C /* CameraScaleHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CABFF3A319951CBF00DC7C4C /* CameraScaleHelper.m */; };
 		CABFF3A8199531BB00DC7C4C /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = CABFF3A7199531BB00DC7C4C /* OverlayView.m */; };
@@ -141,6 +142,7 @@
 		CAB132D8199E60A900C43B41 /* filterIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "filterIcon@2x.png"; sourceTree = "<group>"; };
 		CAB132E319A1898100C43B41 /* InfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoViewController.h; sourceTree = "<group>"; };
 		CAB132E419A1898100C43B41 /* InfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoViewController.m; sourceTree = "<group>"; };
+		CAB132E719A23B4A00C43B41 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		CABFF3A219951CBF00DC7C4C /* CameraScaleHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraScaleHelper.h; sourceTree = "<group>"; };
 		CABFF3A319951CBF00DC7C4C /* CameraScaleHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraScaleHelper.m; sourceTree = "<group>"; };
 		CABFF3A6199531BB00DC7C4C /* OverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayView.h; sourceTree = "<group>"; };
@@ -210,6 +212,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAB132E819A23B4A00C43B41 /* CoreImage.framework in Frameworks */,
 				CAFDD33F199D7D9300BC0DFE /* SystemConfiguration.framework in Frameworks */,
 				CABFF4E21999B50400DC7C4C /* Accounts.framework in Frameworks */,
 				CABFF4E01999B3FD00DC7C4C /* Social.framework in Frameworks */,
@@ -254,6 +257,7 @@
 		CA6F57FB1994137200FF7783 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CAB132E719A23B4A00C43B41 /* CoreImage.framework */,
 				CAFDD33E199D7D9300BC0DFE /* SystemConfiguration.framework */,
 				CABFF4E11999B50400DC7C4C /* Accounts.framework */,
 				CABFF4DF1999B3FD00DC7C4C /* Social.framework */,

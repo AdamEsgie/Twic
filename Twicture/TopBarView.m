@@ -8,6 +8,7 @@
 
 #import "TopBarView.h"
 #import "UserDefaultsHelper.h"
+#import <CoreImage/CoreImage.h>
 
 @implementation TopBarView
 
@@ -76,16 +77,20 @@
   CIContext *context = [CIContext contextWithOptions:nil];
   CIFilter *filter;
   
-  if (self.filter == originalPhoto) {
+//  if (self.filter == originalPhoto) {
     filter = [CIFilter filterWithName:@"CIPhotoEffectMono" keysAndValues:kCIInputImageKey, beginImage, nil];
-    self.filter = blackAndWhitePhoto;
-  } else if (self.filter == blackAndWhitePhoto) {
-    filter = [CIFilter filterWithName:@"CIPhotoEffectChrome" keysAndValues:kCIInputImageKey, beginImage, nil];
-    self.filter = chromePhoto;
-  } else {
-    self.filter = originalPhoto;
-    return [self.delegate changeToFilteredImage:[self.delegate originalImage]];
-  }
+//    self.filter = blackAndWhitePhoto;
+//  } else if (self.filter == blackAndWhitePhoto) {
+//    filter = [CIFilter filterWithName:@"CIPhotoEffectChrome" keysAndValues:kCIInputImageKey, beginImage, nil];
+//    self.filter = chromePhoto;
+//  } else {
+//    self.filter = originalPhoto;
+//    return [self.delegate changeToFilteredImage:[self.delegate originalImage]];
+//  }
+  
+//  filter = [CIFilter filterWithName:@"CIAffineTile" keysAndValues:
+//                              kCIInputImageKey, beginImage,
+//                              nil];
   
   CIImage *outputImage = [filter outputImage];
   CGImageRef cgimg = [context createCGImage:outputImage fromRect:[outputImage extent]];

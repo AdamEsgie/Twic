@@ -24,9 +24,7 @@
 @property (nonatomic, strong) UIImageView *actionView;
 
 -(IBAction)takePhotoTapped:(id)sender;
--(IBAction)commentTapped:(id)sender;
 -(IBAction)sendTapped:(id)sender;
--(IBAction)cancelTapped:(id)sender;
 -(void)clearTargetsAndActions;
 -(void)addTargetAtIndex:(NSInteger)index;
 @end
