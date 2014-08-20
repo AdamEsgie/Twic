@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA6CB74D19A4DD2E00C0DAC2 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CA6CB74B19A4DD2E00C0DAC2 /* Model.xcdatamodeld */; };
+		CA6CB74E19A4DD2E00C0DAC2 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CA6CB74B19A4DD2E00C0DAC2 /* Model.xcdatamodeld */; };
+		CA6CB75119A4DDA400C0DAC2 /* Tweet.m in Sources */ = {isa = PBXBuildFile; fileRef = CA6CB75019A4DDA400C0DAC2 /* Tweet.m */; };
+		CA6CB75219A4DDA400C0DAC2 /* Tweet.m in Sources */ = {isa = PBXBuildFile; fileRef = CA6CB75019A4DDA400C0DAC2 /* Tweet.m */; };
+		CA6CB75519A4DE8800C0DAC2 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CA6CB75419A4DE8800C0DAC2 /* DataManager.m */; };
+		CA6CB75619A4DE8800C0DAC2 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CA6CB75419A4DE8800C0DAC2 /* DataManager.m */; };
 		CA6F57FD1994137200FF7783 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA6F57FC1994137200FF7783 /* Foundation.framework */; };
 		CA6F57FF1994137200FF7783 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA6F57FE1994137200FF7783 /* CoreGraphics.framework */; };
 		CA6F58011994137200FF7783 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA6F58001994137200FF7783 /* UIKit.framework */; };
@@ -120,6 +126,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CA6CB74C19A4DD2E00C0DAC2 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		CA6CB74F19A4DDA400C0DAC2 /* Tweet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tweet.h; sourceTree = "<group>"; };
+		CA6CB75019A4DDA400C0DAC2 /* Tweet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tweet.m; sourceTree = "<group>"; };
+		CA6CB75319A4DE8800C0DAC2 /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
+		CA6CB75419A4DE8800C0DAC2 /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
 		CA6F57F91994137200FF7783 /* Twic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Twic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA6F57FC1994137200FF7783 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CA6F57FE1994137200FF7783 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -235,6 +246,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CA6CB74A19A4DD1700C0DAC2 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				CA6CB74B19A4DD2E00C0DAC2 /* Model.xcdatamodeld */,
+				CA6CB74F19A4DDA400C0DAC2 /* Tweet.h */,
+				CA6CB75019A4DDA400C0DAC2 /* Tweet.m */,
+				CA6CB75319A4DE8800C0DAC2 /* DataManager.h */,
+				CA6CB75419A4DE8800C0DAC2 /* DataManager.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		CA6F57F01994137200FF7783 = {
 			isa = PBXGroup;
 			children = (
@@ -408,6 +431,7 @@
 				CABFF4E41999B53300DC7C4C /* TwitterRequest.m */,
 				CABFF3E01995941300DC7C4C /* ActionButtonHelper.h */,
 				CABFF3E11995941300DC7C4C /* ActionButtonHelper.m */,
+				CA6CB74A19A4DD1700C0DAC2 /* Model */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -563,7 +587,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA6F580D1994137200FF7783 /* AppDelegate.m in Sources */,
+				CA6CB75519A4DE8800C0DAC2 /* DataManager.m in Sources */,
+				CA6CB74D19A4DD2E00C0DAC2 /* Model.xcdatamodeld in Sources */,
 				CABFF4E51999B53300DC7C4C /* TwitterRequest.m in Sources */,
+				CA6CB75119A4DDA400C0DAC2 /* Tweet.m in Sources */,
 				CAB132E519A1898100C43B41 /* InfoViewController.m in Sources */,
 				CABFF3E21995941300DC7C4C /* ActionButtonHelper.m in Sources */,
 				CAFDD34A199D842C00BC0DFE /* ProgressHUD.m in Sources */,
@@ -599,9 +626,12 @@
 				CAB132E619A1898100C43B41 /* InfoViewController.m in Sources */,
 				CABFF4161998360700DC7C4C /* TopBarView.m in Sources */,
 				CA6F58391994176600FF7783 /* MainViewController.m in Sources */,
+				CA6CB75219A4DDA400C0DAC2 /* Tweet.m in Sources */,
 				CAFDD322199BF68C00BC0DFE /* CameraRollViewController.m in Sources */,
+				CA6CB74E19A4DD2E00C0DAC2 /* Model.xcdatamodeld in Sources */,
 				CABFF43E1999077A00DC7C4C /* InvisibleDragMagicButton.m in Sources */,
 				CABFF4CB19995D3D00DC7C4C /* AnimationHelper.m in Sources */,
+				CA6CB75619A4DE8800C0DAC2 /* DataManager.m in Sources */,
 				CABFF4DB19996E2000DC7C4C /* PhotoViewController.m in Sources */,
 				CAFDD343199D7E3200BC0DFE /* Reachability.m in Sources */,
 				CABFF3A519951CBF00DC7C4C /* CameraScaleHelper.m in Sources */,
@@ -812,6 +842,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		CA6CB74B19A4DD2E00C0DAC2 /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				CA6CB74C19A4DD2E00C0DAC2 /* Model.xcdatamodel */,
+			);
+			currentVersion = CA6CB74C19A4DD2E00C0DAC2 /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = CA6F57F11994137200FF7783 /* Project object */;
 }
