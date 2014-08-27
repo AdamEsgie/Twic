@@ -112,10 +112,6 @@
   
   if (!self.photoViewController) {
     self.photoViewController = [[PhotoViewController alloc] initWithFrame:self.view.bounds];
-    
-    self.photoViewController.delegate = self;
-    self.photoViewController.topBar.delegate = self;
-    self.photoViewController.actionButton.delegate = self;
     self.photoViewController.linkLength = defaultLinkLength;
     [self pushViewController:self.photoViewController animated:NO];
     
@@ -125,6 +121,10 @@
       [request getCharacterLengthOfURL];
     }
   }
+  
+  self.photoViewController.delegate = self;
+  self.photoViewController.topBar.delegate = self;
+  self.photoViewController.actionButton.delegate = self;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -260,10 +260,15 @@
 - (void)cancelCameraRoll
 {
   [self dismissViewControllerAnimated:YES completion:^{
-    if (self.cameraController) {
-      [self presentViewController:self.cameraController animated:NO completion:nil];
+    
+    if (!self.isPresentingInfoController) {
+      if (self.cameraController) {
+        [self presentViewController:self.cameraController animated:NO completion:nil];
+      } else {
+        [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
+      }
     } else {
-      [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
+      self.isPresentingInfoController = NO;
     }
   }];
 }
@@ -280,12 +285,15 @@
 
 - (void)showInfo
 {
-  self.infoController = [[InfoViewController alloc] init] ;
-  self.infoController.view.frame = self.view.bounds;
-  self.infoController.topBar.delegate = self;
   self.isPresentingInfoController = YES;
+  
+  if (!self.infoController) {
+    self.infoController = [[InfoViewController alloc] init] ;
+    self.infoController.view.frame = self.view.bounds;
+    self.infoController.topBar.delegate = self;
+    self.isPresentingInfoController = YES;
+  }
   [self presentViewController:self.infoController animated:YES completion:nil];
-  self.cameraController = nil;
 }
 #pragma mark - ActionButton Delegate
 - (void)twicTaken
@@ -339,7 +347,6 @@
 -(void)shouldResetController
 {
   self.capturedImage = nil;
-  self.isCameraReady = NO;
 
   [self.photoViewController.topBar.leftButton setImage:[ActionButtonHelper topBarButtonDictionaryForState:cameraRollState][@"image"] forState:UIControlStateNormal];
   [self.photoViewController.topBar.rightButton setImage:[ActionButtonHelper topBarButtonDictionaryForState:frontCameraState][@"image"] forState:UIControlStateNormal];
@@ -348,6 +355,7 @@
   if (self.cameraController) {
     [self presentViewController:self.cameraController animated:NO completion:^{}];
   } else {
+    self.isCameraReady = NO;
     [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
   }
 }

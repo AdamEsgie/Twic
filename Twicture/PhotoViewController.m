@@ -81,7 +81,7 @@
 {
   if (!self.photoView) {
     self.photoView = [[UIImageView alloc] initWithFrame:CGRectMake(0, buttonSize, self.view.width, self.view.height-buttonSize*2)];
-    self.photoView.contentMode = UIViewContentModeScaleAspectFit;
+    self.photoView.contentMode = UIViewContentModeScaleAspectFill;
     [self.view addSubview:self.photoView];
   }
   
@@ -124,8 +124,10 @@
   } completion:^(BOOL finished) {
     [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:commentState][@"image"]];
     [self.topBar.leftButton setImage:[ActionButtonHelper topBarButtonDictionaryForState:infoState][@"image"] forState:UIControlStateNormal];
+    [self.topBar.leftButton removeTarget:self.topBar action:NULL forControlEvents:UIControlEventAllEvents];
     [self.topBar.leftButton addTarget:self.topBar action:NSSelectorFromString([ActionButtonHelper topBarButtonDictionaryForState:infoState][@"selector"]) forControlEvents:UIControlEventTouchUpInside];
     [self.topBar.rightButton setImage:[ActionButtonHelper topBarButtonDictionaryForState:filterState][@"image"] forState:UIControlStateNormal];
+    [self.topBar.rightButton removeTarget:self.topBar action:NULL forControlEvents:UIControlEventAllEvents];
     [self.topBar.rightButton addTarget:self.topBar action:NSSelectorFromString([ActionButtonHelper topBarButtonDictionaryForState:filterState][@"selector"]) forControlEvents:UIControlEventTouchUpInside];
   
     [UIView animateWithDuration:0.15 delay:0.2 usingSpringWithDamping:0.2 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseInOut animations:^{
@@ -246,6 +248,8 @@
               } completion:^(BOOL finished) {
                 [self.delegate shouldStartSendingTwic];
                 self.animatingDrag = NO;
+                self.originalImage = nil;
+                self.photoView.image = nil;
               }];
             }];
           }];
