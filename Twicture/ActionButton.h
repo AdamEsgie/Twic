@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @protocol ActionButtonDelegate <NSObject>
-
+@optional
 -(void)twicTaken;
 -(void)sendTwic;
 -(BOOL)isInternetAvailable;
@@ -27,4 +27,6 @@
 -(IBAction)sendTapped:(id)sender;
 -(void)clearTargetsAndActions;
 -(void)addTargetAtIndex:(NSInteger)index;
+-(IBAction)cancelTapped:(id)sender;
+-(IBAction)commentTapped:(id)sender;
 @end

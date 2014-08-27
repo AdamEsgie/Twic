@@ -26,6 +26,8 @@
 #import "ProgressHUD.h"
 #import <AVFoundation/AVFoundation.h>
 #import "InfoViewController.h"
+#import "Tweet.h"
+#import "DataManager.h"
 
 @interface MainViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, ActionButtonDelegate, PhotoButtonDelegate, TwitterDelegate, TopBarDelegate, CameraRollDelegate>
 
@@ -39,8 +41,11 @@
 @property (nonatomic, strong) ALAssetsLibrary *assetsLibrary;
 @property (nonatomic, strong) Reachability *internetReachable;
 @property (nonatomic, strong) InfoViewController *infoController;
+@property (nonatomic, strong) DataManager *dataManager;
 
 @property NSInteger indexOfSelectedAccount;
+@property NSInteger maxImageSize;
+
 @property BOOL shouldShowCameraRoll;
 @property BOOL isPresentingInfoController;
 @property BOOL animatingDrag;
@@ -60,6 +65,8 @@
       self.navigationBarHidden = YES;
       self.accounts = accounts;
       self.indexOfSelectedAccount = 0;
+      self.maxImageSize = defaultMaxImageSize;
+      self.dataManager = [[DataManager alloc] initWithDefaultStore];
     }
     return self;
 }
@@ -89,25 +96,7 @@
       }
     }];
   }
-}
-
-
-
-- (void)viewWillAppear:(BOOL)animated
-{
-  [super viewWillAppear:YES];
   
-  [[UIApplication sharedApplication] setStatusBarHidden:YES];
-  
-  if (!self.photoViewController) {
-    self.photoViewController = [PhotoViewController new];
-    self.photoViewController.delegate = self;
-    self.photoViewController.view.frame = self.view.bounds;
-    self.photoViewController.topBar.delegate = self;
-    self.photoViewController.actionButton.delegate = self;
-    [self pushViewController:self.photoViewController animated:NO];
-  }
-
   if (!self.internetReachable) {
     self.internetReachable = [Reachability reachabilityWithHostName:@"www.google.com"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
@@ -115,15 +104,26 @@
     [self.internetReachable startNotifier];
     self.isInternetReachable = YES;
   }
-  
-  if ([self hasAccounts]) {
-    self.photoViewController.topBar.accountLabel.text = [self currentAccountName];
-    self.photoViewController.originalImage = self.capturedImage;
-    [self.photoViewController.photoView setImage:self.capturedImage];
+}
 
-  } else {
-    self.photoViewController.topBar.accountLabel.text = @"No Accounts";
-    [self.photoViewController.photoView setImage:[UIImage imageNamed:@"noAccountsImage"]];
+- (void)viewWillAppear:(BOOL)animated
+{
+  [super viewWillAppear:animated];
+  
+  if (!self.photoViewController) {
+    self.photoViewController = [[PhotoViewController alloc] initWithFrame:self.view.bounds];
+    
+    self.photoViewController.delegate = self;
+    self.photoViewController.topBar.delegate = self;
+    self.photoViewController.actionButton.delegate = self;
+    self.photoViewController.linkLength = defaultLinkLength;
+    [self pushViewController:self.photoViewController animated:NO];
+    
+    if ([self hasAccounts]) {
+      TwitterRequest *request = [TwitterRequest new];
+      request.delegate = self;
+      [request getCharacterLengthOfURL];
+    }
   }
 }
 
@@ -133,11 +133,13 @@
   
   if (self.accounts.count > 0) {
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera] && !self.capturedImage && !self.shouldShowCameraRoll) {
-      self.isCameraReady = NO;
-      [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
       
-    } else if (self.capturedImage) {
-      [self.photoViewController animateButtons];
+      if (self.cameraController) {
+        [self presentViewController:self.cameraController animated:NO completion:nil];
+      } else {
+        self.isCameraReady = NO;
+        [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
+      }
     }
   }
 }
@@ -165,13 +167,13 @@
     self.cameraController.cameraViewTransform = [CameraScaleHelper scaleForFullScreen];
     self.cameraController.cameraOverlayView = self.overlayView;
   
-  } else if (sourceType == UIImagePickerControllerSourceTypePhotoLibrary) {
-    self.cameraController.navigationBarHidden = YES;
   }
   
   [self presentViewController:self.cameraController animated:animated completion:^{
+
     if (self.photoViewController.didCancelPost) {
       self.photoViewController.didCancelPost = NO;
+      
       [UIView animateWithDuration:0 animations:^{
         self.overlayView.topBar.leftButton.transform = [AnimationHelper scaleShrinkView:self.overlayView.topBar.leftButton];
         self.overlayView.topBar.rightButton.transform = [AnimationHelper scaleShrinkView:self.overlayView.topBar.rightButton];
@@ -245,22 +247,23 @@
   self.shouldShowCameraRoll = YES;
 
   [self dismissViewControllerAnimated:NO completion:^{
-    self.rollViewController = [[CameraRollViewController alloc] initWithAssetGroup:self.group] ;
-    self.rollViewController.view.frame = self.view.bounds;
-    self.rollViewController.topBar.delegate = self;
-    self.rollViewController.delegate = self;
+    if (!self.rollViewController) {
+      self.rollViewController = [[CameraRollViewController alloc] initWithAssetGroup:self.group] ;
+      self.rollViewController.view.frame = self.view.bounds;
+      self.rollViewController.topBar.delegate = self;
+      self.rollViewController.delegate = self;
+    }
     [self presentViewController:self.rollViewController animated:YES completion:nil];
-    self.cameraController = nil;
   }];
 }
 
 - (void)cancelCameraRoll
 {
   [self dismissViewControllerAnimated:YES completion:^{
-    if (!self.isPresentingInfoController) {
-      [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
+    if (self.cameraController) {
+      [self presentViewController:self.cameraController animated:NO completion:nil];
     } else {
-      self.isPresentingInfoController = NO;
+      [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
     }
   }];
 }
@@ -293,9 +296,7 @@
 -(void)sendTwic
 {
   if (self.isInternetReachable) {
-    TwitterRequest *twitterRequest = [[TwitterRequest alloc] init];
-    twitterRequest.delegate = self;
-    [twitterRequest postImage:self.photoViewController.photoView.image withStatus:self.photoViewController.textField.text ?: @""];
+    [self setupTwitterRequest];
     [self.photoViewController cleanupTextViewAndDismissKeyboard];
   } else {
     [ProgressHUD showError:@"Ack! No Internet!"];
@@ -318,22 +319,23 @@
   
   UIImageWriteToSavedPhotosAlbum(self.capturedImage, nil, nil, nil);
   
-  if (self.photoViewController) {
-    [self.photoViewController centerCommentButtonAnimated:NO];
-  }
+  [self.photoViewController centerCommentButtonAnimated:NO];
+  self.photoViewController.originalImage = self.capturedImage;
+  [self.photoViewController.photoView setImage:self.capturedImage];
   
-  [self dismissViewControllerAnimated:NO completion:nil];
+  [self dismissViewControllerAnimated:NO completion:^{
+    [self.photoViewController animateButtons];
+  }];
 }
 
 #pragma mark - PhotoView Delegate
 
 -(void)shouldStartSendingTwic
 {
-  TwitterRequest *twitterRequest = [[TwitterRequest alloc] init];
-  twitterRequest.delegate = self;
-  [twitterRequest postImage:self.photoViewController.photoView.image withStatus:self.photoViewController.textField.text ?: @""];
+  [self setupTwitterRequest];
   [self shouldResetController];
 }
+
 -(void)shouldResetController
 {
   self.capturedImage = nil;
@@ -343,30 +345,65 @@
   [self.photoViewController.topBar.rightButton setImage:[ActionButtonHelper topBarButtonDictionaryForState:frontCameraState][@"image"] forState:UIControlStateNormal];
   [self.photoViewController.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:photoState][@"image"]];
   
-  [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
+  if (self.cameraController) {
+    [self presentViewController:self.cameraController animated:NO completion:^{}];
+  } else {
+    [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
+  }
 }
 
 #pragma mark - Twitter Delegate
+- (void)setupTwitterRequest
+{
+  NSError *err;
+  NSData *data = UIImageJPEGRepresentation(self.photoViewController.photoView.image, 0.5f);
+  
+  if (self.maxImageSize < [data length]) {
+    data = nil;
+    data = UIImageJPEGRepresentation(self.photoViewController.photoView.image, 0.0f);
+  }
+  
+  Tweet *tweet = [self.dataManager insertNewTweetWithData:UIImageJPEGRepresentation(self.photoViewController.photoView.image, 0.5f) text:self.photoViewController.textField.text date:[NSDate date] sent:NO andAccount:[self currentAccountName] error:&err];
+  
+  if (nil == err) {
+    TwitterRequest *twitterRequest = [[TwitterRequest alloc] init];
+    twitterRequest.delegate = self;
+    [twitterRequest postTweet:tweet];
+  }
+}
 -(void)errorSendingTweetWithString:(NSString*)string
 {
-  [ProgressHUD showError:[NSString stringWithFormat:@"Error while posting - %@", string]];
-  NSLog(@"%@",[NSString stringWithFormat:@"Error while posting - %@", string]);
-  double delayInSeconds = 3.0;
-  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-    [ProgressHUD dismiss];
-  });
+  
 }
 
--(void)successSendingTweet
+-(void)theCurrentLinkLength:(NSInteger)length
 {
+  self.photoViewController.linkLength = length;
+}
+
+-(void)maxImageSize:(NSInteger)maxImageSize
+{
+  self.maxImageSize = maxImageSize;
+}
+
+-(NSInteger)currentMaxSize
+{
+  return self.maxImageSize;
 }
 
 #pragma mark - Camera Roll Delegate
 -(void)didSelectImageFromCameraRoll:(UIImage*)image
 {
   self.capturedImage = image;
-  [self dismissViewControllerAnimated:NO completion:nil];
+  
+  [self.photoViewController centerCommentButtonAnimated:NO];
+  self.photoViewController.originalImage = self.capturedImage;
+  [self.photoViewController.photoView setImage:self.capturedImage];
+  
+  [self dismissViewControllerAnimated:NO completion:^{
+    [self.photoViewController animateButtons];
+  }];
+  
 }
 
 #pragma mark - ALAsset Prep

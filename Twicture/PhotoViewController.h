@@ -16,6 +16,7 @@
 -(void)shouldResetController;
 - (BOOL)hasAccounts;
 -(BOOL)isInternetAvailable;
+-(NSString*)currentAccountName;
 
 @end
 
@@ -32,7 +33,10 @@
 
 @property BOOL isInErrorState;
 @property BOOL didCancelPost;
+@property NSInteger linkLength;
 
+-(instancetype)initWithFrame:(CGRect)frame;
+-(void)setup;
 -(void)animateButtons;
 -(void)centerCommentButtonAnimated:(BOOL)animated;
 -(void)cleanupTextViewAndDismissKeyboard;

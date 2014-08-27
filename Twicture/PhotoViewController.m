@@ -17,7 +17,7 @@
 #import "AnimationHelper.h"
 #import "ProgressHUD.h"
 
-@interface PhotoViewController () <InvisibleButtonDelegate, ActionButtonDelegate>
+@interface PhotoViewController () <InvisibleButtonDelegate, ActionButtonDelegate, UITextFieldDelegate>
 
 @property (nonatomic, strong) InvisibleDragMagicButton *invisibleDragMagicButton;
 @property (nonatomic, strong) UIView *tapView;
@@ -29,11 +29,11 @@
 
 @implementation PhotoViewController
 
-- (id)initWithPhoto:(UIImage*)image
+- (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super init];
     if (self) {
-      
+      self.view.frame = frame;
     }
     return self;
 }
@@ -41,14 +41,28 @@
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  [self setup];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
+  
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+  
+  if ([self.delegate hasAccounts]) {
+    self.topBar.accountLabel.text = [self.delegate currentAccountName];
+    
+  } else {
+    [self disableButtonsIfNoAccounts];
+    self.topBar.accountLabel.text = @"No Accounts";
+    [self.photoView setImage:[UIImage imageNamed:@"noAccountsImage"]];
+  }
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+  [self setup];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -65,30 +79,38 @@
 
 -(void)setup
 {
-  self.photoView = [[UIImageView alloc] initWithFrame:CGRectMake(0, buttonSize, self.view.width, self.view.height-buttonSize*2)];
-  [self.view addSubview:self.photoView];
-  
-  self.topBar = [[TopBarView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, buttonSize)];
-  [self.topBar.leftButton setImage:[ActionButtonHelper topBarButtonDictionaryForState:cameraRollState][@"image"] forState:UIControlStateNormal];
-  [self.topBar.leftButton addTarget:self.topBar action:NSSelectorFromString([ActionButtonHelper topBarButtonDictionaryForState:cameraRollState][@"selector"]) forControlEvents:UIControlEventTouchUpInside];
-  [self.view addSubview:self.topBar];
-  
-  self.bottomBar = [[BottomBarView alloc] initWithFrame:CGRectMake(0, self.view.height-buttonSize, self.view.width, buttonSize)];
-  [self.view addSubview:self.bottomBar];
-  
-  self.actionButton = [[ActionButton alloc] initWithFrame:CGRectMake(self.view.width/2 - buttonSize/2, self.view.height - buttonSize, buttonSize, buttonSize)];
-  [self.view addSubview:self.actionButton];
-  
-  self.invisibleDragMagicButton = [InvisibleDragMagicButton new];
-  self.invisibleDragMagicButton.delegate = self;
-  [self.invisibleDragMagicButton addTarget:self action:@selector(draggedOut:withEvent:) forControlEvents:UIControlEventTouchDragInside | UIControlEventTouchDragOutside];
-  [self.invisibleDragMagicButton addTarget:self action:@selector(commentInitiated:) forControlEvents:UIControlEventTouchUpInside];
-  self.invisibleDragMagicButton.frame = CGRectMake(self.view.width/2-buttonSize/2, self.view.height-buttonSize, buttonSize, buttonSize);
-  [self.view addSubview:self.invisibleDragMagicButton];
-  
-  if (![self.delegate hasAccounts]) {
-    [self disableButtonsIfNoAccounts];
+  if (!self.photoView) {
+    self.photoView = [[UIImageView alloc] initWithFrame:CGRectMake(0, buttonSize, self.view.width, self.view.height-buttonSize*2)];
+    self.photoView.contentMode = UIViewContentModeScaleAspectFit;
+    [self.view addSubview:self.photoView];
   }
+  
+  if(!self.topBar) {
+    self.topBar = [[TopBarView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, buttonSize)];
+    [self.topBar.leftButton setImage:[ActionButtonHelper topBarButtonDictionaryForState:cameraRollState][@"image"] forState:UIControlStateNormal];
+    [self.topBar.leftButton addTarget:self.topBar action:NSSelectorFromString([ActionButtonHelper topBarButtonDictionaryForState:cameraRollState][@"selector"]) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.topBar];
+  }
+  
+  if (!self.bottomBar) {
+    self.bottomBar = [[BottomBarView alloc] initWithFrame:CGRectMake(0, self.view.height-buttonSize, self.view.width, buttonSize)];
+    [self.view addSubview:self.bottomBar];
+  }
+  
+  if (!self.actionButton) {
+    self.actionButton = [[ActionButton alloc] initWithFrame:CGRectMake(self.view.width/2 - buttonSize/2, self.view.height - buttonSize, buttonSize, buttonSize)];
+    [self.view addSubview:self.actionButton];
+  }
+  
+  if (!self.invisibleDragMagicButton) {
+    self.invisibleDragMagicButton = [InvisibleDragMagicButton new];
+    self.invisibleDragMagicButton.delegate = self;
+    [self.invisibleDragMagicButton addTarget:self action:@selector(draggedOut:withEvent:) forControlEvents:UIControlEventTouchDragInside | UIControlEventTouchDragOutside];
+    [self.invisibleDragMagicButton addTarget:self action:@selector(commentInitiated:) forControlEvents:UIControlEventTouchUpInside];
+    self.invisibleDragMagicButton.frame = CGRectMake(self.view.width/2-buttonSize/2, self.view.height-buttonSize, buttonSize, buttonSize);
+    [self.view addSubview:self.invisibleDragMagicButton];
+  }
+
 }
 
 -(void)animateButtons
@@ -178,6 +200,8 @@
               } completion:^(BOOL finished) {
                 self.animatingDrag = NO;
                 self.didCancelPost = YES;
+                self.originalImage = nil;
+                self.photoView.image = nil;
                 [self.delegate shouldResetController];
               }];
             }];
@@ -244,10 +268,17 @@
     self.textField = [[UITextField alloc] initWithFrame:CGRectMake(buttonSize, self.bottomBar.top, self.view.width - (buttonSize*2), self.bottomBar.height)];
     self.textField.font = DefaultTextFieldFont;
     self.textField.tintColor = [UIColor blackColor];
+    self.textField.delegate = self;
     [self.view addSubview:self.textField];
     [self.textField becomeFirstResponder];
   }
 }
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+  NSUInteger newLength = [textField.text length] + [string length] - range.length;
+  return (newLength > (140 - self.linkLength)) ? NO : YES;
+}
+
 #pragma mark - Keyboard Notifications
 - (void)keyboardWillShow:(NSNotification *)notification
 {

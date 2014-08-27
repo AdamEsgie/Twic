@@ -29,8 +29,7 @@ typedef NS_ENUM(NSInteger, TopBarButtonState)
 typedef NS_ENUM(NSInteger, Filters)
 {
   originalPhoto = 0,
-  chromePhoto = 1,
-  blackAndWhitePhoto = 2,
+  pixelPhoto = 1,
 };
 
 #define YellowButtonColor [UIColor colorWithRed:255/255.0f green:203/255.0f blue:1/255.0f alpha:1.00]
@@ -42,6 +41,8 @@ typedef NS_ENUM(NSInteger, Filters)
 #define DefaultTextFieldLargeFont [UIFont fontWithName:@"AvenirNextCondensed-Medium" size:64.0f]
 
 static const CGFloat buttonSize = 64;
+static const CGFloat defaultLinkLength = 23;
+static const CGFloat defaultMaxImageSize = 3145728;
 
 extern NSString* const UserDefaultsHelperSettingRunMoreThanOnce;
 extern NSString* const UserDefaultsHelperSettingLastAccount;

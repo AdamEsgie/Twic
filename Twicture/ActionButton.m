@@ -52,6 +52,15 @@
   [self.delegate sendTwic];
 }
 
+-(IBAction)cancelTapped:(id)sender
+{
+
+}
+-(IBAction)commentTapped:(id)sender
+{
+
+}
+
 -(void)clearTargetsAndActions
 {
   [self removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];

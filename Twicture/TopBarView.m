@@ -72,33 +72,27 @@
 
 -(IBAction)filterButtonTapped:(id)sender
 {
-  CIImage *beginImage = [[CIImage alloc] initWithCGImage:[self.delegate originalImage].CGImage options:nil];
   
-  CIContext *context = [CIContext contextWithOptions:nil];
-  CIFilter *filter;
+  if (self.filter == originalPhoto) {
+    self.filter = pixelPhoto;
+    CIImage *beginImage = [[CIImage alloc] initWithCGImage:[self.delegate originalImage].CGImage options:nil];
+    CIContext *context = [CIContext contextWithOptions:nil];
+    
+    CIFilter *filter= [CIFilter filterWithName:@"CIPhotoEffectProcess"];
+    [filter setValue:beginImage forKey:@"inputImage"];
+
+    CIImage *outputImage = [filter outputImage];
+    CGImageRef cgimg = [context createCGImage:outputImage fromRect:[outputImage extent]];
+    
+    UIImage *newImage = [UIImage imageWithCGImage:cgimg scale:[[self.delegate originalImage] scale] orientation:UIImageOrientationRight];
+    [self.delegate changeToFilteredImage:newImage];
+    
+    CGImageRelease(cgimg);
   
-//  if (self.filter == originalPhoto) {
-    filter = [CIFilter filterWithName:@"CIPhotoEffectMono" keysAndValues:kCIInputImageKey, beginImage, nil];
-//    self.filter = blackAndWhitePhoto;
-//  } else if (self.filter == blackAndWhitePhoto) {
-//    filter = [CIFilter filterWithName:@"CIPhotoEffectChrome" keysAndValues:kCIInputImageKey, beginImage, nil];
-//    self.filter = chromePhoto;
-//  } else {
-//    self.filter = originalPhoto;
-//    return [self.delegate changeToFilteredImage:[self.delegate originalImage]];
-//  }
-  
-//  filter = [CIFilter filterWithName:@"CIAffineTile" keysAndValues:
-//                              kCIInputImageKey, beginImage,
-//                              nil];
-  
-  CIImage *outputImage = [filter outputImage];
-  CGImageRef cgimg = [context createCGImage:outputImage fromRect:[outputImage extent]];
-  
-  UIImage *newImage = [UIImage imageWithCGImage:cgimg scale:1.0 orientation:UIImageOrientationRight];
-  [self.delegate changeToFilteredImage:newImage];
-  
-  CGImageRelease(cgimg);
+  } else {
+    self.filter = originalPhoto;
+    return [self.delegate changeToFilteredImage:[self.delegate originalImage]];
+  }
 }
 
 

@@ -493,6 +493,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = esgie;
 				TargetAttributes = {
+					CA6F57F81994137200FF7783 = {
+						DevelopmentTeam = 66AR5NCUU4;
+					};
 					CA6F58191994137200FF7783 = {
 						TestTargetID = CA6F57F81994137200FF7783;
 					};
@@ -750,10 +753,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Twicture/Twic-Prefix.pch";
 				INFOPLIST_FILE = "Twicture/Twic-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = Twic;
+				PROVISIONING_PROFILE = "51d9d1cd-99a4-4ccd-9885-a6d3378b9ba7";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -763,10 +770,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Adam Salvitti-Gucwa (66AR5NCUU4)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Adam Salvitti-Gucwa (66AR5NCUU4)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Twicture/Twic-Prefix.pch";
 				INFOPLIST_FILE = "Twicture/Twic-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = Twic;
+				PROVISIONING_PROFILE = "48aac2fa-28e5-4d4d-b5a0-0c800734d239";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

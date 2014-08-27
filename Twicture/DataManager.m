@@ -12,6 +12,29 @@
 
 @implementation DataManager
 
++ (instancetype)sharedInstance
+{
+  static id sharedInstance;
+  static dispatch_once_t onceToken;
+  
+  dispatch_once(&onceToken, ^{
+    sharedInstance = [[self alloc] initWithDefaultStore];
+  });
+  
+  return sharedInstance;
+}
+
++ (NSURL *)defaultStoreUrl
+{
+  NSURL *documentDirectory = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] firstObject];
+  return [documentDirectory URLByAppendingPathComponent:@"Model.sqlite"];
+}
+
++ (void)clearDefaultStore
+{
+  [[NSFileManager defaultManager] removeItemAtURL:[self defaultStoreUrl] error:nil];
+}
+
 - (instancetype)initWithDefaultStore
 {
   return [self initWithStoreUrl:[[self class] defaultStoreUrl]];
@@ -62,18 +85,7 @@
 
 - (NSManagedObjectModel *)createManagedObjectModel
 {
-  return [[NSManagedObjectModel alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"Twic" withExtension:@"momd"]];
-}
-
-+ (NSURL *)defaultStoreUrl
-{
-  NSURL *documentDirectory = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] firstObject];
-  return [documentDirectory URLByAppendingPathComponent:@"Twic.sqlite"];
-}
-
-+ (void)clearDefaultStore
-{
-  [[NSFileManager defaultManager] removeItemAtURL:[self defaultStoreUrl] error:nil];
+  return [[NSManagedObjectModel alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"Model" withExtension:@"momd"]];
 }
 
 #pragma mark - ManagedObjectContext setup
@@ -89,4 +101,31 @@
   return mainManagedObjectContext;
 }
 
+//////////////////////////////////////////////////////////////////////////////
+
+- (Tweet *)insertNewTweetWithData:(NSData*)data text:(NSString*)text date:(NSDate*)date sent:(BOOL)sent andAccount:(NSString*)account error:(NSError *__autoreleasing *)error
+{
+  Tweet *tweet = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([Tweet class]) inManagedObjectContext:self.mainManagedObjectContext];
+  
+  tweet.imageData = data;
+  tweet.text = text;
+  tweet.date = date;
+  tweet.sent = @(sent);
+  tweet.account = account;
+  
+  [self.mainManagedObjectContext save:error];
+  
+  return tweet;
+}
+
+- (NSArray *)fetchUnsentTweets:(NSError *__autoreleasing *)error
+{
+  NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+  
+  fetchRequest.entity = [NSEntityDescription entityForName:NSStringFromClass([Tweet class]) inManagedObjectContext:self.mainManagedObjectContext];
+  [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sent == 0"]];
+  [fetchRequest setSortDescriptors:@[[[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO]]];
+
+  return [self.mainManagedObjectContext executeFetchRequest:fetchRequest error:error];
+}
 @end
