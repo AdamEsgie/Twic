@@ -8,15 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
-@class TopBarView, BottomBarView, ActionButton;
+@class TopBarView, BottomBarView, ActionButton, ACAccount, MainViewController;
 
 @protocol PhotoButtonDelegate <NSObject>
 
 -(void)shouldStartSendingTwic;
 -(void)shouldResetController;
-- (BOOL)hasAccounts;
+-(BOOL)hasAccounts;
 -(BOOL)isInternetAvailable;
 -(NSString*)currentAccountName;
+-(ACAccount*)currentAccount;
+-(void)getDelegateForActionButton:(ActionButton*)button;
+-(void)getDelegateForTopBar:(TopBarView*)topBar;
 
 @end
 

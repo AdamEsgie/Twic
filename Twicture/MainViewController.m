@@ -104,15 +104,11 @@
     [self.internetReachable startNotifier];
     self.isInternetReachable = YES;
   }
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-  [super viewWillAppear:animated];
   
   if (!self.photoViewController) {
     self.photoViewController = [[PhotoViewController alloc] initWithFrame:self.view.bounds];
     self.photoViewController.linkLength = defaultLinkLength;
+    self.photoViewController.delegate = self;
     [self pushViewController:self.photoViewController animated:NO];
     
     if ([self hasAccounts]) {
@@ -121,10 +117,11 @@
       [request getCharacterLengthOfURL];
     }
   }
-  
-  self.photoViewController.delegate = self;
-  self.photoViewController.topBar.delegate = self;
-  self.photoViewController.actionButton.delegate = self;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+  [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -337,6 +334,15 @@
 }
 
 #pragma mark - PhotoView Delegate
+-(void)getDelegateForTopBar:(TopBarView*)topBar
+{
+  topBar.delegate = self;
+}
+
+-(void)getDelegateForActionButton:(ActionButton*)button
+{
+  button.delegate = self;
+}
 
 -(void)shouldStartSendingTwic
 {
@@ -353,6 +359,7 @@
   [self.photoViewController.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:photoState][@"image"]];
   
   if (self.cameraController) {
+    self.overlayView.topBar.accountLabel.text = [self currentAccountName];
     [self presentViewController:self.cameraController animated:NO completion:^{}];
   } else {
     self.isCameraReady = NO;

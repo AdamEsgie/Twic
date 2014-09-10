@@ -10,7 +10,7 @@
 
 @class TwitterRequest;
 
-@interface MainViewController : UINavigationController
+@interface MainViewController : UINavigationController 
 
 @property (nonatomic, strong, readonly) NSArray *accounts;
 

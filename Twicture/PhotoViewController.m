@@ -16,6 +16,7 @@
 #import "InvisibleDragMagicButton.h"
 #import "AnimationHelper.h"
 #import "ProgressHUD.h"
+#import "MainViewController.h"
 
 @interface PhotoViewController () <InvisibleButtonDelegate, ActionButtonDelegate, UITextFieldDelegate>
 
@@ -34,6 +35,10 @@
     self = [super init];
     if (self) {
       self.view.frame = frame;
+      self.photoView = [UIImageView new];
+      self.photoView.frame = CGRectMake(0, buttonSize, self.view.width, self.view.height-buttonSize*2);
+      self.photoView.contentMode = UIViewContentModeScaleAspectFill;
+      [self.view addSubview:self.photoView];
     }
     return self;
 }
@@ -48,7 +53,10 @@
   [super viewWillAppear:animated];
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+  
+  [self setup];
   
   if ([self.delegate hasAccounts]) {
     self.topBar.accountLabel.text = [self.delegate currentAccountName];
@@ -62,14 +70,18 @@
 
 -(void)viewDidAppear:(BOOL)animated
 {
-  [self setup];
+  [super viewDidAppear:animated];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
 {
   [super viewWillDisappear:animated];
+  
+  [UserDefaultsHelper setLastViewedAccount:[self.delegate currentAccount]];
+  
   [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
   [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidShowNotification object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -79,14 +91,9 @@
 
 -(void)setup
 {
-  if (!self.photoView) {
-    self.photoView = [[UIImageView alloc] initWithFrame:CGRectMake(0, buttonSize, self.view.width, self.view.height-buttonSize*2)];
-    self.photoView.contentMode = UIViewContentModeScaleAspectFill;
-    [self.view addSubview:self.photoView];
-  }
-  
   if(!self.topBar) {
     self.topBar = [[TopBarView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, buttonSize)];
+    [self.delegate getDelegateForTopBar:self.topBar];
     [self.topBar.leftButton setImage:[ActionButtonHelper topBarButtonDictionaryForState:cameraRollState][@"image"] forState:UIControlStateNormal];
     [self.topBar.leftButton addTarget:self.topBar action:NSSelectorFromString([ActionButtonHelper topBarButtonDictionaryForState:cameraRollState][@"selector"]) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.topBar];
@@ -99,6 +106,7 @@
   
   if (!self.actionButton) {
     self.actionButton = [[ActionButton alloc] initWithFrame:CGRectMake(self.view.width/2 - buttonSize/2, self.view.height - buttonSize, buttonSize, buttonSize)];
+    [self.delegate getDelegateForActionButton:self.actionButton];
     [self.view addSubview:self.actionButton];
   }
   
@@ -290,7 +298,6 @@
   NSTimeInterval duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
   UIViewAnimationCurve curve = [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue];
   
-  
   [self.actionButton clearTargetsAndActions];
   [self.actionButton addTargetAtIndex:sendState];
   
@@ -304,14 +311,18 @@
   } completion:^(BOOL finished) {
     
     [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:sendState][@"image"]];
+    [self addTapRecognizerToDismissWithKeyboardHeight:keyboardRect.size.height];
     
     [UIView animateWithDuration:0.10 animations:^{
       self.actionButton.actionView.transform = [AnimationHelper scaleExpandView:self.actionButton.actionView];
       self.actionButton.center = CGPointMake(self.view.width-self.actionButton.width/2, self.actionButton.center.y);
     } completion:^(BOOL finished) {}];
   }];
+}
 
-  [self addTapRecognizerToDismiss];
+-(void)keyboardDidShow:(NSNotification *)notification
+{
+  
 }
 
 -(void)keyboardWillHide:(NSNotification *)notification
@@ -338,7 +349,6 @@
     } else if (!self.isInErrorState) {
       [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:photoState][@"image"]];
     }
-
     
     [UIView animateWithDuration:0.10 animations:^{
       if (!self.isInErrorState) {
@@ -353,7 +363,6 @@
         [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:commentState][@"image"]];
       }
       self.canceledTextField = NO;
-      
     }];
   }];
 }
@@ -398,10 +407,10 @@
   self.bottomBar.userInteractionEnabled = NO;
 }
 
--(void)addTapRecognizerToDismiss
+-(void)addTapRecognizerToDismissWithKeyboardHeight:(CGFloat)keyHeight
 {
   self.tapView = [[UIView alloc] init];
-  self.tapView.frame = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.view.bounds), self.view.height - self.textField.top);
+  self.tapView.frame = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) - self.textField.height - keyHeight);
   [self.view addSubview:self.tapView];
   
   UIGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cleanupOnTextViewCancel)];

@@ -760,7 +760,7 @@
 				INFOPLIST_FILE = "Twicture/Twic-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = Twic;
-				PROVISIONING_PROFILE = "51d9d1cd-99a4-4ccd-9885-a6d3378b9ba7";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
