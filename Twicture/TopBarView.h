@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @protocol TopBarDelegate <NSObject>
-
 - (NSString*)nextAccountName;
 - (void)changeCamera;
 - (void)showPhotoLibrary;

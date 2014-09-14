@@ -30,7 +30,7 @@
 
 @implementation PhotoViewController
 
-- (instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame andDelegate:(id<PhotoControllerDelegate>)delegate
 {
     self = [super init];
     if (self) {
@@ -39,6 +39,9 @@
       self.photoView.frame = CGRectMake(0, buttonSize, self.view.width, self.view.height-buttonSize*2);
       self.photoView.contentMode = UIViewContentModeScaleAspectFill;
       [self.view addSubview:self.photoView];
+      
+      self.delegate = delegate;
+      [self setup];
     }
     return self;
 }
@@ -55,8 +58,6 @@
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-  
-  [self setup];
   
   if ([self.delegate hasAccounts]) {
     self.topBar.accountLabel.text = [self.delegate currentAccountName];

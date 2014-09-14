@@ -10,7 +10,7 @@
 
 @class TopBarView, BottomBarView, ActionButton, ACAccount, MainViewController;
 
-@protocol PhotoButtonDelegate <NSObject>
+@protocol PhotoControllerDelegate <NSObject>
 
 -(void)shouldStartSendingTwic;
 -(void)shouldResetController;
@@ -25,7 +25,7 @@
 
 @interface PhotoViewController : UIViewController
 
-@property (nonatomic,weak) id <PhotoButtonDelegate> delegate;
+@property (nonatomic,weak) id <PhotoControllerDelegate> delegate;
 @property (nonatomic, strong) UIImageView *photoView;
 @property (nonatomic, strong) BottomBarView *bottomBar;
 @property (nonatomic, strong) TopBarView *topBar;
@@ -38,7 +38,7 @@
 @property BOOL didCancelPost;
 @property NSInteger linkLength;
 
--(instancetype)initWithFrame:(CGRect)frame;
+-(instancetype)initWithFrame:(CGRect)frame andDelegate:(id<PhotoControllerDelegate>)delegate;
 -(void)setup;
 -(void)animateButtons;
 -(void)centerCommentButtonAnimated:(BOOL)animated;

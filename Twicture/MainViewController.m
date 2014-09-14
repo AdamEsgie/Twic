@@ -29,7 +29,7 @@
 #import "Tweet.h"
 #import "DataManager.h"
 
-@interface MainViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, ActionButtonDelegate, PhotoButtonDelegate, TwitterDelegate, TopBarDelegate, CameraRollDelegate>
+@interface MainViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, ActionButtonDelegate, PhotoControllerDelegate, TwitterDelegate, TopBarDelegate, CameraRollDelegate>
 
 @property (nonatomic, strong) UIImagePickerController *cameraController;
 @property (nonatomic, strong) OverlayView *overlayView;
@@ -67,6 +67,12 @@
       self.indexOfSelectedAccount = 0;
       self.maxImageSize = defaultMaxImageSize;
       self.dataManager = [[DataManager alloc] initWithDefaultStore];
+      
+      if (!self.photoViewController) {
+        self.photoViewController = [[PhotoViewController alloc] initWithFrame:self.view.bounds andDelegate:self];
+        self.photoViewController.linkLength = defaultLinkLength;
+        [self pushViewController:self.photoViewController animated:NO];
+      }
     }
     return self;
 }
@@ -104,24 +110,17 @@
     [self.internetReachable startNotifier];
     self.isInternetReachable = YES;
   }
-  
-  if (!self.photoViewController) {
-    self.photoViewController = [[PhotoViewController alloc] initWithFrame:self.view.bounds];
-    self.photoViewController.linkLength = defaultLinkLength;
-    self.photoViewController.delegate = self;
-    [self pushViewController:self.photoViewController animated:NO];
-    
-    if ([self hasAccounts]) {
-      TwitterRequest *request = [TwitterRequest new];
-      request.delegate = self;
-      [request getCharacterLengthOfURL];
-    }
-  }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
+  
+  if ([self hasAccounts]) {
+    TwitterRequest *request = [TwitterRequest new];
+    request.delegate = self;
+    [request getCharacterLengthOfURL];
+  }
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -132,7 +131,7 @@
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera] && !self.capturedImage && !self.shouldShowCameraRoll) {
       
       if (self.cameraController) {
-        [self presentViewController:self.cameraController animated:NO completion:nil];
+        [self.photoViewController presentViewController:self.cameraController animated:NO completion:nil];
       } else {
         self.isCameraReady = NO;
         [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
@@ -166,7 +165,7 @@
   
   }
   
-  [self presentViewController:self.cameraController animated:animated completion:^{
+  [self.photoViewController presentViewController:self.cameraController animated:animated completion:^{
 
     if (self.photoViewController.didCancelPost) {
       self.photoViewController.didCancelPost = NO;
@@ -243,24 +242,24 @@
 {
   self.shouldShowCameraRoll = YES;
 
-  [self dismissViewControllerAnimated:NO completion:^{
+  [self.photoViewController dismissViewControllerAnimated:NO completion:^{
     if (!self.rollViewController) {
       self.rollViewController = [[CameraRollViewController alloc] initWithAssetGroup:self.group] ;
       self.rollViewController.view.frame = self.view.bounds;
       self.rollViewController.topBar.delegate = self;
       self.rollViewController.delegate = self;
     }
-    [self presentViewController:self.rollViewController animated:YES completion:nil];
+    [self.photoViewController presentViewController:self.rollViewController animated:YES completion:nil];
   }];
 }
 
 - (void)cancelCameraRoll
 {
-  [self dismissViewControllerAnimated:YES completion:^{
+  [self.photoViewController dismissViewControllerAnimated:YES completion:^{
     
     if (!self.isPresentingInfoController) {
       if (self.cameraController) {
-        [self presentViewController:self.cameraController animated:NO completion:nil];
+        [self.photoViewController presentViewController:self.cameraController animated:NO completion:nil];
       } else {
         [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
       }
@@ -290,7 +289,7 @@
     self.infoController.topBar.delegate = self;
     self.isPresentingInfoController = YES;
   }
-  [self presentViewController:self.infoController animated:YES completion:nil];
+  [self.photoViewController presentViewController:self.infoController animated:YES completion:nil];
 }
 #pragma mark - ActionButton Delegate
 - (void)twicTaken
@@ -328,7 +327,7 @@
   self.photoViewController.originalImage = self.capturedImage;
   [self.photoViewController.photoView setImage:self.capturedImage];
   
-  [self dismissViewControllerAnimated:NO completion:^{
+  [self.photoViewController dismissViewControllerAnimated:NO completion:^{
     [self.photoViewController animateButtons];
   }];
 }
@@ -360,7 +359,7 @@
   
   if (self.cameraController) {
     self.overlayView.topBar.accountLabel.text = [self currentAccountName];
-    [self presentViewController:self.cameraController animated:NO completion:^{}];
+    [self.photoViewController presentViewController:self.cameraController animated:NO completion:^{}];
   } else {
     self.isCameraReady = NO;
     [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];
@@ -371,19 +370,15 @@
 - (void)setupTwitterRequest
 {
   NSError *err;
-  NSData *data = UIImageJPEGRepresentation(self.photoViewController.photoView.image, 0.5f);
+  NSData *data = UIImageJPEGRepresentation(self.photoViewController.photoView.image, 0.0f);
   
-  if (self.maxImageSize < [data length]) {
-    data = nil;
-    data = UIImageJPEGRepresentation(self.photoViewController.photoView.image, 0.0f);
-  }
-  
-  Tweet *tweet = [self.dataManager insertNewTweetWithData:UIImageJPEGRepresentation(self.photoViewController.photoView.image, 0.5f) text:self.photoViewController.textField.text date:[NSDate date] sent:NO andAccount:[self currentAccountName] error:&err];
+  Tweet *tweet = [self.dataManager insertNewTweetWithData:data text:self.photoViewController.textField.text date:[NSDate date] sent:NO andAccount:[self currentAccountName] error:&err];
   
   if (nil == err) {
     TwitterRequest *twitterRequest = [[TwitterRequest alloc] init];
     twitterRequest.delegate = self;
     [twitterRequest postTweet:tweet];
+    self.photoViewController.photoView.image = nil;
   }
 }
 -(void)errorSendingTweetWithString:(NSString*)string
@@ -415,7 +410,7 @@
   self.photoViewController.originalImage = self.capturedImage;
   [self.photoViewController.photoView setImage:self.capturedImage];
   
-  [self dismissViewControllerAnimated:NO completion:^{
+  [self.photoViewController dismissViewControllerAnimated:NO completion:^{
     [self.photoViewController animateButtons];
   }];
   
