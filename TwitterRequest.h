@@ -17,7 +17,6 @@
 -(void)successSendingTweet;
 -(void)theCurrentLinkLength:(NSInteger)length;
 -(void)maxImageSize:(NSInteger)maxImageSize;
-
 @end
 
 @interface TwitterRequest : NSObject
@@ -25,9 +24,8 @@
 @property (nonatomic, strong, readonly) NSArray *accounts;
 @property (nonatomic, weak) id <TwitterDelegate> delegate;
 
-- (void)postImage:(UIImage *)image withStatus:(NSString *)status;
 - (void)postTweet:(Tweet *)tweet;
--(void)getAccountsWithCompletionHandler:(void (^)(NSArray*))completionBlock;
+- (void)getAccountsWithCompletionHandler:(void (^)(NSArray*))completionBlock;
 - (void)getCharacterLengthOfURL;
 
 @end

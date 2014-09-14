@@ -32,7 +32,9 @@
 @property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, strong) ActionButton *actionButton;
 @property (nonatomic, strong) UIImage *originalImage;
+@property (nonatomic, strong) UIImage *filteredImage;
 @property (nonatomic, strong) NSData *twicData;
+@property NSInteger filter;
 
 @property BOOL isInErrorState;
 @property BOOL didCancelPost;

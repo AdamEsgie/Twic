@@ -359,6 +359,8 @@
 		CA6F584519951B5200FF7783 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				CABFF3E01995941300DC7C4C /* ActionButtonHelper.h */,
+				CABFF3E11995941300DC7C4C /* ActionButtonHelper.m */,
 				CABFF4C819995D3D00DC7C4C /* AnimationHelper.h */,
 				CABFF4C919995D3D00DC7C4C /* AnimationHelper.m */,
 				CABFF3A219951CBF00DC7C4C /* CameraScaleHelper.h */,
@@ -434,8 +436,6 @@
 			children = (
 				CABFF4E31999B53300DC7C4C /* TwitterRequest.h */,
 				CABFF4E41999B53300DC7C4C /* TwitterRequest.m */,
-				CABFF3E01995941300DC7C4C /* ActionButtonHelper.h */,
-				CABFF3E11995941300DC7C4C /* ActionButtonHelper.m */,
 				CA6CB74A19A4DD1700C0DAC2 /* Model */,
 			);
 			name = Data;

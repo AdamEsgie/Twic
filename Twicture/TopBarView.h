@@ -9,10 +9,12 @@
 #import <UIKit/UIKit.h>
 
 @protocol TopBarDelegate <NSObject>
+@optional
 - (NSString*)nextAccountName;
 - (void)changeCamera;
 - (void)showPhotoLibrary;
 - (void)cancelCameraRoll;
+- (void)didTapFilter;
 - (void)changeToFilteredImage:(UIImage*)image;
 - (UIImage*)originalImage;
 - (void)showInfo;

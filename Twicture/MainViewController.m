@@ -290,6 +290,35 @@
   }
   [self.photoViewController presentViewController:self.infoController animated:YES completion:nil];
 }
+
+- (void)didTapFilter
+{
+  if (self.photoViewController.filter == originalPhoto) {
+    if (!self.photoViewController.filteredImage) {
+      self.photoViewController.filter = filterPhoto;
+      UIImage *image = self.originalImage;
+      UIImageOrientation originalOrientation = image.imageOrientation;
+      CIImage *beginImage = [[CIImage alloc] initWithCGImage:image.CGImage options:nil];
+      CIContext *context = [CIContext contextWithOptions:nil];
+      
+      CIFilter *filter= [CIFilter filterWithName:@"CIPhotoEffectProcess"];
+      [filter setValue:beginImage forKey:@"inputImage"];
+      
+      CIImage *outputImage = [filter outputImage];
+      CGImageRef cgimg = [context createCGImage:outputImage fromRect:[outputImage extent]];
+      
+      UIImage *newImage = [UIImage imageWithCGImage:cgimg scale:[self.originalImage scale] orientation:originalOrientation];
+    
+      [self changeToFilteredImage:newImage];
+      CGImageRelease(cgimg);
+    } else {
+      [self changeToFilteredImage:self.photoViewController.filteredImage];
+    }
+  } else if (self.photoViewController.filter == filterPhoto) {
+    self.photoViewController.filter = originalPhoto;
+    return [self changeToFilteredImage:self.originalImage];
+  }
+}
 #pragma mark - ActionButton Delegate
 - (void)twicTaken
 {

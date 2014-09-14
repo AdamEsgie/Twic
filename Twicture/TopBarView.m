@@ -73,30 +73,7 @@
 
 -(IBAction)filterButtonTapped:(id)sender
 {
-  
-  if (self.filter == originalPhoto) {
-    self.filter = filterPhoto;
-    UIImage *image = [self.delegate originalImage];
-    UIImageOrientation originalOrientation = image.imageOrientation;
-    CIImage *beginImage = [[CIImage alloc] initWithCGImage:image.CGImage options:nil];
-    CIContext *context = [CIContext contextWithOptions:nil];
-    
-    CIFilter *filter= [CIFilter filterWithName:@"CIPhotoEffectProcess"];
-    [filter setValue:beginImage forKey:@"inputImage"];
-
-    CIImage *outputImage = [filter outputImage];
-    CGImageRef cgimg = [context createCGImage:outputImage fromRect:[outputImage extent]];
-    
-    UIImage *newImage = [UIImage imageWithCGImage:cgimg scale:[[self.delegate originalImage] scale] orientation:originalOrientation];
-    
-    [self.delegate changeToFilteredImage:newImage];
-    
-    CGImageRelease(cgimg);
-  
-  } else if (self.filter == filterPhoto) {
-    self.filter = originalPhoto;
-    return [self.delegate changeToFilteredImage:[self.delegate originalImage]];
-  }
+  [self.delegate didTapFilter];
 }
 
 

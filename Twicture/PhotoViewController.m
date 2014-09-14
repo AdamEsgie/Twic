@@ -40,6 +40,7 @@
       self.photoView.contentMode = UIViewContentModeScaleAspectFill;
       [self.view addSubview:self.photoView];
       
+      self.filter = originalPhoto;
       self.delegate = delegate;
       [self setup];
     }
@@ -213,6 +214,7 @@
                 self.didCancelPost = YES;
                 self.originalImage = nil;
                 self.photoView.image = nil;
+                self.filter = originalPhoto;
                 [self.delegate shouldResetController];
               }];
             }];
@@ -259,6 +261,7 @@
                 self.animatingDrag = NO;
                 self.originalImage = nil;
                 self.photoView.image = nil;
+                self.filter = originalPhoto;
               }];
             }];
           }];
@@ -363,6 +366,7 @@
         [self.delegate shouldResetController];
         [self.actionButton.actionView setImage:[ActionButtonHelper actionDictionaryForState:commentState][@"image"]];
       }
+      self.filter = originalPhoto;
       self.canceledTextField = NO;
     }];
   }];
@@ -391,7 +395,7 @@
   self.textField = nil;
   
   [self.tapView removeFromSuperview];
-  self.tapView = NO;
+  self.tapView = nil;
 }
 
 -(void)cleanupOnTextViewCancel
