@@ -162,7 +162,6 @@
     self.cameraController.showsCameraControls = NO;
     self.cameraController.cameraViewTransform = [CameraScaleHelper scaleForFullScreen];
     self.cameraController.cameraOverlayView = self.overlayView;
-  
   }
   
   [self.photoViewController presentViewController:self.cameraController animated:animated completion:^{
@@ -359,7 +358,9 @@
   
   if (self.cameraController) {
     self.overlayView.topBar.accountLabel.text = [self currentAccountName];
-    [self.photoViewController presentViewController:self.cameraController animated:NO completion:^{}];
+    [self.photoViewController presentViewController:self.cameraController animated:NO completion:^{
+    
+    }];
   } else {
     self.isCameraReady = NO;
     [self showCameraForSource:UIImagePickerControllerSourceTypeCamera animated:NO];

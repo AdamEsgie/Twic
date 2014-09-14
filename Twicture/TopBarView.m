@@ -9,6 +9,7 @@
 #import "TopBarView.h"
 #import "UserDefaultsHelper.h"
 #import <CoreImage/CoreImage.h>
+#import "UIImage+fixOrientation.h"
 
 @implementation TopBarView
 
@@ -74,8 +75,10 @@
 {
   
   if (self.filter == originalPhoto) {
-    self.filter = pixelPhoto;
-    CIImage *beginImage = [[CIImage alloc] initWithCGImage:[self.delegate originalImage].CGImage options:nil];
+    self.filter = filterPhoto;
+    UIImage *image = [self.delegate originalImage];
+    UIImageOrientation originalOrientation = image.imageOrientation;
+    CIImage *beginImage = [[CIImage alloc] initWithCGImage:image.CGImage options:nil];
     CIContext *context = [CIContext contextWithOptions:nil];
     
     CIFilter *filter= [CIFilter filterWithName:@"CIPhotoEffectProcess"];
@@ -84,12 +87,13 @@
     CIImage *outputImage = [filter outputImage];
     CGImageRef cgimg = [context createCGImage:outputImage fromRect:[outputImage extent]];
     
-    UIImage *newImage = [UIImage imageWithCGImage:cgimg scale:[[self.delegate originalImage] scale] orientation:UIImageOrientationRight];
+    UIImage *newImage = [UIImage imageWithCGImage:cgimg scale:[[self.delegate originalImage] scale] orientation:originalOrientation];
+    
     [self.delegate changeToFilteredImage:newImage];
     
     CGImageRelease(cgimg);
   
-  } else {
+  } else if (self.filter == filterPhoto) {
     self.filter = originalPhoto;
     return [self.delegate changeToFilteredImage:[self.delegate originalImage]];
   }

@@ -28,7 +28,7 @@
 @property (nonatomic, strong) UILabel *accountLabel;
 @property NSInteger filter;
 
-- (id)initWithFrame:(CGRect)frame andDelegate:(id<TopBarDelegate>)delegate;
+- (id)initWithFrame:(CGRect)frame;
 -(IBAction)rollTapped:(id)sender;
 -(IBAction)infoButtonTapped:(id)sender;
 -(IBAction)cancelCameraRollTapped:(id)sender;

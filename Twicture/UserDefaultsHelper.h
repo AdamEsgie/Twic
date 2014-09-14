@@ -29,7 +29,7 @@ typedef NS_ENUM(NSInteger, TopBarButtonState)
 typedef NS_ENUM(NSInteger, Filters)
 {
   originalPhoto = 0,
-  pixelPhoto = 1,
+  filterPhoto = 1,
 };
 
 #define YellowButtonColor [UIColor colorWithRed:255/255.0f green:203/255.0f blue:1/255.0f alpha:1.00]
